@@ -1,17 +1,5 @@
 #include "main_header.h"
 
-int	ft_strlen(char *str)
-{
-	int	i;
-
-	if (!str)
-		return (0);
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
-}
-
 int	ft_check_philo_number(char *argv)
 {
 	if (ft_strlen(argv) == 1 && (argv[0] <= '1'))
@@ -54,17 +42,13 @@ int	ft_check_params(int argc, char *argv[])
 	int	i;
 
 	i = 0;
-	if (argc != 5 && argc != 6)
-	{
-		if (argc < 5)
-			return (exception(ONE));
-		else
-			return (exception(TWO));
-		return (-1);
-	}
+	if (argc < 5)
+		return (exception(ONE));
+	if (argc > 6)
+		return (exception(TWO));
 	if (!is_number_positive_array(&argv[1]))
 		return (-1);
 	if (!ft_check_philo_number(argv[1]))
 		return (-1);
-	return (0);
+	return (1);
 }

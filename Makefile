@@ -1,21 +1,23 @@
-NAME	= philo
+NAME			= philo
 
-INCLUDES	=	-I ./includes/
-SRCS_DIR	=	./srcs/
-OBJS_DIR	=	./objs/
+INCLUDES		=	-I ./includes/
+LIBFT_DIR		=	./libft/
+LIBRARY_PATH	=	./libft/libft.a
+SRCS_DIR		=	./srcs/
+OBJS_DIR		=	./objs/
 
-SRCS_FILES	= main.c exception.c check_functions.c
-OBJS_FILES	= $(SRCS_FILES:.c=.o)
+SRCS_FILES		= main.c exception.c check_functions.c
+OBJS_FILES		= $(SRCS_FILES:.c=.o)
 
-SRCS		= $(addprefix $(SRCS_DIR), $(SRCS_FILES))
+SRCS			= $(addprefix $(SRCS_DIR), $(SRCS_FILES))
 
-CC			=	gcc
-CFLAGS		=	-Wall -Wextra -Werror
+CC				=	gcc
+CFLAGS			=	-Wall -Wextra -Werror
 
 all:
+				$(MAKE) -C $(LIBFT_DIR)
 				mkdir -p $(OBJS_DIR)
-				@($(CC)  $(CFLAGS) $(INCLUDES) $(SRCS) -o $(NAME))
-				#mv $(OBJS_FILES) $(OBJS_DIR)
+				@($(CC) $(CFLAGS) $(INCLUDES) $(LIBRARY_PATH) $(SRCS) -o $(NAME))
 
 clean:
 				rm -rf $(OBJS_DIR)*
