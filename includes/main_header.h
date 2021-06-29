@@ -52,9 +52,7 @@ typedef struct	s_params
 	struct timeval	begin_time;
 }				t_params;
 
-//int	ft_check_params(int argc, char *argv[]);
 int	exception(char *str);
-
 
 /*
  * CHECK_FUNCTIONS.C
@@ -64,19 +62,15 @@ int	ft_check_params(int argc, char *argv[]);
 /*
  * PHILO_OBJ.C
  */
-int	setup_philos(t_params *params);
-int get_elapsed_time(struct timeval start);
+int	run_lifecycle(t_params *params);
+int get_time(struct timeval start);
 
 
 /*
  * PHILO_TOOLS.C
  */
 int	print_message(t_philo *philo);
-void	philo_isalive(t_philo *philo, int now);
-int philo_startmeal(t_philo *philo, int now);
-int philo_endmeal(t_philo *philo, int now);
-
-
-
+int start_meal(t_philo *philo, int process_time);
+int finish_meal(t_philo *philo, int process_time);
 
 #endif

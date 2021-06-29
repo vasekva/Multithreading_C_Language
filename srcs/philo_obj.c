@@ -1,6 +1,6 @@
 # include "main_header.h"
 
-int get_elapsed_time(struct timeval start)
+int get_time(struct timeval start)
 {
 	struct timeval now;
 	if (gettimeofday(&now, NULL) == -1)
@@ -15,7 +15,6 @@ void	*start_processes(void *data)
 	int	process_time;
 
 	philo = (t_philo *)data;
-	process_time = 0;
 	if (philo->philo_id == 1)
 	{
 		philo->right_fork_id = 0;
@@ -28,20 +27,25 @@ void	*start_processes(void *data)
 	}
 	while (philo->params->stop_flag == 0)
 	{
-		process_time = get_elapsed_time(philo->params->begin_time); // <--
+		process_time = get_time(philo->params->begin_time);
 		if (process_time == -1)
 			return (NULL);
-		philo_isalive(philo, process_time); // <--
+		if (process_time >= philo->last_meal + philo->params->time_to_die)
+		{
+			philo->status = dead;
+			print_message(philo);
+			philo->params->stop_flag = 1;
+		}
 		if (philo->params->stop_flag == 1)
 			return (0);
 		if (philo->status == thinking)
 		{
-			philo_startmeal(philo, process_time);
+			start_meal(philo, process_time);
 		}
 		if (philo->status == eating)
 		{
 			if (process_time >= philo->last_meal + philo->params->time_to_eat)
-				philo_endmeal(philo, process_time);
+				finish_meal(philo, process_time);
 		}
 		if (philo->status == sleeping)
 		{
@@ -57,7 +61,7 @@ void	*start_processes(void *data)
 	return (NULL);
 }
 
-int setup_philos(t_params *params)
+int run_lifecycle(t_params *params)
 {
 	int i;
 	t_philo *philo;
@@ -73,7 +77,7 @@ int setup_philos(t_params *params)
 		philo->meal_count = 0;
 		philo->sleep_start = 0;
 		params->philo_data[i] = philo;
-		pthread_create(&params->philos[i], NULL, start_processes, philo); // <--
+		pthread_create(&params->philos[i], NULL, start_processes, philo);
 		usleep(100);
 		i++;
 	}
