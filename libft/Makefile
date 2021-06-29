@@ -4,7 +4,8 @@ INCLUDES	=	-I ./includes
 SRCS_DIR	=	./srcs/
 OBJS_DIR	=	./objs/
 
-FUNCTIONS	=	ft_strlen.c ft_atoi.c
+FUNCTIONS	=	ft_strlen.c ft_atoi.c ft_itoa.c ft_strncmp.c \
+				ft_calloc.c ft_memset.c
 
 SRCS		=	$(addprefix $(SRCS_DIR),	$(FUNCTIONS))
 OBJS		=	$(addprefix $(OBJS_DIR),	$(FUNCTIONS:.c=.o))

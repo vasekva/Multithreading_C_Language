@@ -6,7 +6,9 @@ LIBRARY_PATH	=	./libft/libft.a
 SRCS_DIR		=	./srcs/
 OBJS_DIR		=	./objs/
 
-SRCS_FILES		= main.c exception.c check_functions.c
+SRCS_FILES		= main.c philo_obj.c philo_tools.c \
+					exception.c check_functions.c
+
 OBJS_FILES		= $(SRCS_FILES:.c=.o)
 
 SRCS			= $(addprefix $(SRCS_DIR), $(SRCS_FILES))
@@ -21,6 +23,7 @@ all:
 
 clean:
 				rm -rf $(OBJS_DIR)*
+				$(MAKE) fclean -C $(LIBFT_DIR)
 
 fclean:			clean
 				rm -rf $(OBJS_DIR)

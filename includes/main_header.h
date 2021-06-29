@@ -7,19 +7,76 @@
 # include <stdio.h>
 # include <unistd.h>
 
-int	ft_check_params(int argc, char *argv[]);
+# include <sys/time.h>
+# include <pthread.h>
+
+typedef struct s_params t_params;
+
+typedef enum	s_status
+{
+	eating,
+	sleeping,
+	thinking,
+	taking_fork,
+	dead
+}				t_status;
+
+typedef struct	s_philo
+{
+	int	philo_id;
+	int	last_meal;
+	int sleep_start;
+	int meal_count;
+	int right_fork_id;
+	int left_fork_id;
+
+	t_params	*params;
+	t_status	status;
+}				t_philo;
+
+typedef struct	s_params
+{
+	int	num_of_philo;
+	int time_to_die;
+	int time_to_eat;
+	int time_to_sleep;
+	int meal_count;
+
+	int	stop_flag;
+	int num_of_philo_eaten;
+
+	pthread_t		*philos;
+	pthread_mutex_t	*forks;
+	pthread_mutex_t console;
+	t_philo			**philo_data;
+	struct timeval	begin_time;
+}				t_params;
+
+//int	ft_check_params(int argc, char *argv[]);
 int	exception(char *str);
 
-typedef struct s_philo
-{
-	int philo_number;
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	eat_count;
-	int	eating;
-	int	thinking;
-	int	sleeping;
-}				t_philo;
+
+/*
+ * CHECK_FUNCTIONS.C
+ */
+int	ft_check_params(int argc, char *argv[]);
+
+/*
+ * PHILO_OBJ.C
+ */
+int	setup_philos(t_params *params);
+int get_elapsed_time(struct timeval start);
+
+
+/*
+ * PHILO_TOOLS.C
+ */
+int	print_message(t_philo *philo);
+void	philo_isalive(t_philo *philo, int now);
+int philo_startmeal(t_philo *philo, int now);
+int philo_endmeal(t_philo *philo, int now);
+
+
+
 
 #endif
