@@ -1,12 +1,22 @@
 #include "main_header.h"
 
+void	check_philo(t_philo *philo, int process_time)
+{
+	if (process_time >= philo->last_meal + philo->params->time_to_die)
+	{
+		philo->status = dead;
+		print_message(philo);
+		philo->params->stop_flag = 1;
+	}
+}
+
 int	print_message(t_philo *philo)
 {
 	if (philo->params->stop_flag == 1)
 		return (0);
 	pthread_mutex_lock(&philo->params->console);
 	write(1, ft_itoa(get_time(philo->params->begin_time)),
-	   ft_strlen(ft_itoa(get_time(philo->params->begin_time))));
+		ft_strlen(ft_itoa(get_time(philo->params->begin_time))));
 	write(1, " #", 2);
 	write(1, ft_itoa(philo->philo_id), ft_strlen(ft_itoa(philo->philo_id)));
 	write(1, " ", 1);
@@ -24,7 +34,7 @@ int	print_message(t_philo *philo)
 	return (0);
 }
 
-int finish_meal(t_philo *philo, int process_time)
+int	finish_meal(t_philo *philo, int process_time)
 {
 	if (pthread_mutex_unlock(&philo->params->forks[philo->left_fork_id]) != 0)
 		return (-1);
@@ -45,7 +55,7 @@ int finish_meal(t_philo *philo, int process_time)
 	return (0);
 }
 
-int start_meal(t_philo *philo, int process_time)
+int	start_meal(t_philo *philo, int process_time)
 {
 	if (pthread_mutex_lock(&philo->params->forks[philo->left_fork_id]) != 0)
 		return (-1);

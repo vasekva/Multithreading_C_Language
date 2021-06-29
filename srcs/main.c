@@ -1,6 +1,6 @@
 #include "main_header.h"
 
-int clear_all(t_params *args)
+int	clear_all(t_params *args)
 {
 	int	i;
 
@@ -23,31 +23,24 @@ int clear_all(t_params *args)
 	return (0);
 }
 
-int run_observe_philo(t_params *params)
+int	run_observe_philo(t_params *params)
 {
-	int process_time;
-	int i;
+	int	process_time;
+	int	i;
 
 	while (params->stop_flag == 0)
 	{
-		if (params->meal_count != 0 && (params->num_of_philo_eaten >= params->num_of_philo))
+		if (params->meal_count != 0
+			&& (params->num_of_philo_eaten >= params->num_of_philo))
 		{
 			params->stop_flag = 1;
 			break ;
 		}
-		i = 0;
-		while (i < params->num_of_philo)
+		i = -1;
+		while (++i < params->num_of_philo)
 		{
 			process_time = get_time(params->begin_time);
-			if (process_time == -1)
-				return (-1);
-			if (process_time >= params->philo_data[i]->last_meal + params->time_to_die)
-			{
-				params->philo_data[i]->status = dead;
-				print_message(params->philo_data[i]);
-				params->philo_data[i]->params->stop_flag = 1;
-			}
-			i++;
+			check_philo(params->philo_data[i], process_time);
 		}
 		usleep(1);
 	}
@@ -65,7 +58,7 @@ int	init_struct(t_params *params, int argc, char **argv)
 	else
 		params->meal_count = 0;
 	params->stop_flag = 0;
-	params->num_of_philo_eaten = 0; // -1
+	params->num_of_philo_eaten = 0;
 	params->philo_data = malloc(sizeof(t_philo *) * params->num_of_philo);
 	params->philos = malloc(sizeof(pthread_t) * params->num_of_philo);
 	params->forks = malloc(sizeof(pthread_mutex_t) * params->num_of_philo);
@@ -77,8 +70,8 @@ int	init_struct(t_params *params, int argc, char **argv)
 
 int	main(int argc, char *argv[])
 {
-	t_params params;
-	int i;
+	t_params	params;
+	int			i;
 
 	if (ft_check_params(argc, &argv[1]) == -1)
 		return (-1);

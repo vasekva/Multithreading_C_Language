@@ -2,9 +2,9 @@
 
 static size_t	iteration(const char *str, int index, int neg)
 {
-	size_t i;
-	size_t count;
-	size_t res;
+	size_t	i;
+	size_t	count;
+	size_t	res;
 
 	res = 0;
 	count = 0;
@@ -27,9 +27,9 @@ static size_t	iteration(const char *str, int index, int neg)
 int	ft_atoi(const char *str)
 {
 	int	i;
-	int neg;
-	int res;
-	int flag;
+	int	neg;
+	int	res;
+	int	flag;
 
 	flag = 0;
 	i = 0;

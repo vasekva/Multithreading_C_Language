@@ -10,7 +10,8 @@ static int	check_philo_number(char *philo_number)
 	{
 		if (philo_number[0] > '3')
 			return (exception(FOUR));
-		if (philo_number[0] == '2' && (philo_number[2] != '0' || philo_number[1] != '0'))
+		if (philo_number[0] == '2'
+			&& (philo_number[2] != '0' || philo_number[1] != '0'))
 			return (exception(FOUR));
 	}
 	return (1);
@@ -39,7 +40,7 @@ static int	is_number_positive_array(char *argv[])
 	return (1);
 }
 
-static int check_eat_and_sleep_times(char *str)
+static int	check_eat_and_sleep_times(char *str)
 {
 	if (ft_strlen(str) <= 2)
 	{

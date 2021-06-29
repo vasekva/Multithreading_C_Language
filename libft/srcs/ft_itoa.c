@@ -1,6 +1,6 @@
 #include "libft.h"
 
-static char		*rev_print(char *str)
+static char	*rev_print(char *str)
 {
 	int		i;
 	int		length;
@@ -29,7 +29,7 @@ static size_t	is_neg(int n)
 
 static size_t	ft_numsize(int n)
 {
-	int size;
+	int	size;
 
 	size = 0;
 	if (n == 0)
@@ -44,7 +44,7 @@ static size_t	ft_numsize(int n)
 	return (size + 1);
 }
 
-char			*ft_itoa(int n)
+char	*ft_itoa(int n)
 {
 	char	*str;
 	size_t	len;
@@ -53,7 +53,8 @@ char			*ft_itoa(int n)
 
 	size = ft_numsize(n);
 	neg = (n < 0);
-	if (!(str = ft_calloc(size + neg, sizeof(*str))))
+	str = ft_calloc(size + neg, sizeof(*str));
+	if (!str)
 		return (NULL);
 	if (n == 0)
 		str[0] = '0';
