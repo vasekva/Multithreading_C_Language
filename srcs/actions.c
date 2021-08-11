@@ -52,9 +52,9 @@ int	finish_meal(t_philo *philo, int process_time)
 	philo->sleep_start = process_time;
 	if (philo->meal_count >= philo->params->meal_count)
 	{
-		pthread_mutex_lock(&philo->params->console);
+//		pthread_mutex_lock(&philo->params->console);
 		philo->params->num_of_philo_eaten++;
-		pthread_mutex_unlock(&philo->params->console);
+//		pthread_mutex_unlock(&philo->params->console);
 	}
 	print_message(philo);
 	return (0);
@@ -71,12 +71,7 @@ int	start_meal(t_philo *philo, int process_time)
 	philo->status = taking_fork;
 	print_message(philo);
 	process_time = get_time(philo->params->begin_time);
-	if (process_time >= philo->last_meal + philo->params->time_to_die)
-	{
-		philo->status = dead;
-		print_message(philo);
-		philo->params->stop_flag = 1;
-	}
+	check_philo(philo, process_time);
 	if (philo->status == dead)
 		finish_meal(philo, process_time);
 	philo->status = eating;

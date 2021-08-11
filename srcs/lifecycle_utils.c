@@ -65,7 +65,7 @@ void	*start_processes(void *data)
 	return (NULL);
 }
 
-int	run_lifecycle(t_params *params)
+int	 run_lifecycle(t_params *params)
 {
 	int		i;
 	t_philo	*philo;

@@ -8,6 +8,8 @@ include_directories(includes)
 add_executable(My_PHILO
         includes/errors.h
         includes/main_header.h
+        srcs/exception.c
+        srcs/check_functions.c
         srcs/lifecycle_utils.c
         srcs/actions.c
         srcs/main.c
