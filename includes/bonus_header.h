@@ -47,9 +47,8 @@ typedef struct s_params
 	int				num_of_philo_eaten;
 
 	pthread_t		*philos;
-	pthread_mutex_t	*forks;
-	pthread_mutex_t	console;
 	sem_t			*sem_console;
+	sem_t 			*sem_forks;
 	t_philo			**philo_data;
 	struct timeval	begin_time;
 }				t_params;

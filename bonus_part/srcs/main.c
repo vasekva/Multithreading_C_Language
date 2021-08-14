@@ -7,18 +7,11 @@ int	clear_all(t_params *args)
 	i = 0;
 	while (i < args->num_of_philo)
 	{
-		pthread_mutex_destroy(&args->forks[i]);
-		i++;
-	}
-	i = 0;
-	while (i < args->num_of_philo)
-	{
 		if (pthread_detach(args->philos[i]) != 0)
 			return (-1);
 		i++;
 	}
 	free(args->philos);
-	free(args->forks);
 	free(args->philo_data);
 	return (0);
 }
@@ -61,8 +54,7 @@ int	init_struct(t_params *params, int argc, char **argv)
 	params->num_of_philo_eaten = 0;
 	params->philo_data = malloc(sizeof(t_philo *) * params->num_of_philo);
 	params->philos = malloc(sizeof(pthread_t) * params->num_of_philo);
-	params->forks = malloc(sizeof(pthread_mutex_t) * params->num_of_philo);
-	if (!params->philos || !params->forks || !params->philo_data)
+	if (!params->philos || !params->philo_data)
 		return (-1);
 	else
 		return (0);
@@ -81,12 +73,12 @@ int	main(int argc, char *argv[])
 	gettimeofday(&params.begin_time, NULL);
 	while (i < params.num_of_philo)
 	{
-		pthread_mutex_init(&params.forks[i], NULL);
 		i++;
 	}
-	pthread_mutex_init(&params.console, NULL);
 	sem_unlink("console");
+	sem_unlink("forks");
 	params.sem_console = sem_open("console", O_CREAT, 0666, 1);
+	params.sem_forks = sem_open("forks", O_CREAT, 0666, i);
 	run_lifecycle(&params);
 	run_observe_philo(&params);
 	clear_all(&params);
