@@ -3,7 +3,8 @@ NAME			= philo
 INCLUDES		=	-I ./includes/
 LIBFT_DIR		=	./libft/
 LIBRARY_PATH	=	./libft/libft.a
-SRCS_DIR		=	./srcs/
+MAIN_SRCS_DIR	=	./main_part/srcs/
+BONUS_SRCS_DIR	=	./bonus_part/srcs/
 OBJS_DIR		=	./objs/
 
 SRCS_FILES		= main.c actions.c lifecycle_utils.c \
@@ -11,16 +12,23 @@ SRCS_FILES		= main.c actions.c lifecycle_utils.c \
 
 OBJS_FILES		= $(SRCS_FILES:.c=.o)
 
-SRCS			= $(addprefix $(SRCS_DIR), $(SRCS_FILES))
+MAIN_SRCS			= $(addprefix $(MAIN_SRCS_DIR), $(SRCS_FILES))
+BONUS_SRCS			= $(addprefix $(BONUS_SRCS_DIR), $(SRCS_FILES))
 
 CC				=	gcc
 CFLAGS			=	-Wall -Wextra -Werror
 
 all:
+				@echo	"\033[1m\033[32m===	MAIN_PART COMPILATION...	===\033[0m"
 				$(MAKE) -C $(LIBFT_DIR)
 				mkdir -p $(OBJS_DIR)
-				@($(CC) $(CFLAGS) $(INCLUDES) $(LIBRARY_PATH) $(SRCS) -o $(NAME))
+				@($(CC) $(CFLAGS) $(INCLUDES) $(LIBRARY_PATH) $(MAIN_SRCS) -o $(NAME))
 
+bonus:
+				@echo	"\033[1m\033[31m===	BONUS_PART COMPILATION...	===\033[0m"
+				$(MAKE) -C $(LIBFT_DIR)
+				mkdir -p $(OBJS_DIR)
+				@($(CC) $(CFLAGS) $(INCLUDES) $(LIBRARY_PATH) $(BONUS_SRCS) -o $(NAME))
 clean:
 				rm -rf $(OBJS_DIR)*
 				$(MAKE) fclean -C $(LIBFT_DIR)
