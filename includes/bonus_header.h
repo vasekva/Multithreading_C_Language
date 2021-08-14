@@ -28,8 +28,6 @@ typedef struct s_philo
 	int			last_meal;
 	int			sleep_start;
 	int			meal_count;
-	int			right_fork_id;
-	int			left_fork_id;
 
 	t_params	*params;
 	t_status	status;

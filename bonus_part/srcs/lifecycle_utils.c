@@ -44,16 +44,6 @@ void	*start_processes(void *data)
 	int		process_time;
 
 	philo = (t_philo *)data;
-	if (philo->philo_id == 1)
-	{
-		philo->right_fork_id = 0;
-		philo->left_fork_id = philo->params->num_of_philo - 1;
-	}
-	else
-	{
-		philo->right_fork_id = philo->philo_id - 1;
-		philo->left_fork_id = philo->philo_id - 2;
-	}
 	while (philo->params->stop_flag == 0)
 	{
 		process_time = get_time(philo->params->begin_time);
