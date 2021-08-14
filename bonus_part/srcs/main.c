@@ -72,9 +72,7 @@ int	main(int argc, char *argv[])
 	i = 0;
 	gettimeofday(&params.begin_time, NULL);
 	while (i < params.num_of_philo)
-	{
 		i++;
-	}
 	sem_unlink("console");
 	sem_unlink("forks");
 	params.sem_console = sem_open("console", O_CREAT, 0666, 1);
