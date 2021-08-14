@@ -1,4 +1,4 @@
-#include "main_header.h"
+#include "bonus_header.h"
 
 int	clear_all(t_params *args)
 {
@@ -85,6 +85,8 @@ int	main(int argc, char *argv[])
 		i++;
 	}
 	pthread_mutex_init(&params.console, NULL);
+	sem_unlink("console");
+	params.sem_console = sem_open("console", O_CREAT, 0666, 1);
 	run_lifecycle(&params);
 	run_observe_philo(&params);
 	clear_all(&params);

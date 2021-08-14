@@ -1,4 +1,4 @@
-#include "main_header.h"
+#include "bonus_header.h"
 
 static int	check_philo_number(char *philo_number)
 {

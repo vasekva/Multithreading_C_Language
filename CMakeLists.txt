@@ -19,4 +19,4 @@ add_executable(My_PHILO
         libft/srcs/ft_itoa.c
         libft/srcs/ft_memset.c
         libft/srcs/ft_strncmp.c
-        )
+        includes/bonus_header.h)

@@ -1,4 +1,4 @@
-#include "main_header.h"
+#include "bonus_header.h"
 
 void	check_philo(t_philo *philo, int process_time)
 {
@@ -16,7 +16,8 @@ int	print_message(t_philo *philo)
 
 	if (philo->params->stop_flag == 1)
 		return (0);
-	pthread_mutex_lock(&philo->params->console);
+//	pthread_mutex_lock(&philo->params->console);
+	sem_wait(philo->params->sem_console);
 	str = ft_itoa(get_time(philo->params->begin_time));
 	write(1, str, ft_strlen(str));
 	free(str);
@@ -35,7 +36,8 @@ int	print_message(t_philo *philo)
 		write(1, "died\n", 5);
 	if (philo->status == taking_fork)
 		write(1, "has taken a fork\n", 17);
-	pthread_mutex_unlock(&philo->params->console);
+//	pthread_mutex_unlock(&philo->params->console);
+	sem_post(philo->params->sem_console);
 	return (0);
 }
 
