@@ -78,7 +78,7 @@ int	main(int argc, char *argv[])
 	params.sem_console = sem_open("console", O_CREAT, 0666, 1);
 	params.sem_forks = sem_open("forks", O_CREAT, 0666, i);
 	run_lifecycle(&params);
-	run_observe_philo(&params);
+//	run_observe_philo(&params);
 	clear_all(&params);
 	return (0);
 }

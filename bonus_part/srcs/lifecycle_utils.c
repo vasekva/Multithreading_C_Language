@@ -44,6 +44,8 @@ void	*start_processes(void *data)
 	int		process_time;
 
 	philo = (t_philo *)data;
+	printf("ID: %d PID: %d\n", philo->philo_id, philo->philo_pid);
+	return (NULL);
 	while (philo->params->stop_flag == 0)
 	{
 		process_time = get_time(philo->params->begin_time);
@@ -60,20 +62,32 @@ int	 run_lifecycle(t_params *params)
 	int		i;
 	t_philo	*philo;
 
-	i = 0;
-	while (i < params->num_of_philo)
+	i = -1;
+	while (++i < params->num_of_philo)
 	{
 		philo = malloc(sizeof(t_philo));
-		philo->philo_id = i + 1;
+//		philo->philo_id = i + 1;
+		philo->philo_pid = 0;
 		philo->params = params;
 		philo->status = thinking;
 		philo->last_meal = 0;
 		philo->meal_count = 0;
 		philo->sleep_start = 0;
 		params->philo_data[i] = philo;
-		pthread_create(&params->philos[i], NULL, start_processes, philo);
+//		pthread_create(&params->philos[i], NULL, start_processes, philo);
 		usleep(100);
-		i++;
 	}
+	i = -1;
+//	philo->philo_pid = fork();
+	while (++i < params->num_of_philo)
+	{
+		if (philo->philo_pid == 0)
+		{
+			if (i + 1 != params->num_of_philo)
+				philo->philo_pid = fork();
+			philo->philo_id = i + 1;
+		}
+	}
+	start_processes(philo);
 	return (0);
 }
