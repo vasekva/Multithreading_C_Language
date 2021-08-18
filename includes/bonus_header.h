@@ -10,6 +10,7 @@
 # include <sys/time.h>
 # include <pthread.h>
 # include <semaphore.h>
+# include <signal.h>
 
 typedef struct s_params	t_params;
 
@@ -58,6 +59,7 @@ int		exception(char *str);
  * CHECK_FUNCTIONS.C
  */
 int		ft_check_params(int argc, char *argv[]);
+//void	*run_observe_philo(void *data);
 
 /*
  * PHILO_OBJ.C
