@@ -1,75 +1,139 @@
 #include "bonus_header.h"
 
-void	check_philo(t_philo *philo, int process_time)
+void    philo_eat(t_philo *philo, t_params *params)
 {
-	if (process_time >= philo->last_meal + philo->params->time_to_die)
+    long long t;
+    sem_wait(params->forks);
+    display_out(params, philo->philo_id, "get left fork");
+    sem_wait(params->forks);
+    display_out(params, philo->philo_id, "get right fork");
+    sem_wait(params->check_meal);
+    display_out(params, philo->philo_id, "eating");
+    sem_post(params->check_meal);
+    t = timestamp();
+    while (params->died == 0)
+    {
+        if (time_diff(t, timestamp()) >= params->time_eat)
+            break;
+        usleep(50);
+    }
+    philo->meal_count++;
+    sem_post(params->forks);
+    philo->last_meal = timestamp();
+    sem_post(params->forks);
+}
+
+void    *check_death(void   *philosopher)
+{
+    t_philo *phi_str;
+    t_params *params;
+
+    phi_str = (t_philo*)philosopher;
+    params = phi_str->t_philo;
+    while (1)
+    {
+        sem_wait(params->check_meal);
+        if (time_diff(phi_str->last_meal, timestamp()) > params->time_die)
+        {
+        	display_out(params, phi_str->philo_id, "is died");
+            params->died = 1;
+            sem_wait(params->console);
+            exit(1);
+        }
+        sem_post(params->check_meal);
+        if (params->must_eat != -1 && phi_str->meal_count >= params->must_eat)
+        {
+            params->all_ate = 1;
+            break;
+        }
+        usleep(1000);
+    }
+    exit(0);
+    return (NULL);
+}
+
+void    philo_sleep(t_philo *philo, t_params *params)
+{
+	long long i;
+
+	display_out(params, philo->philo_id, "sleeping");
+	i = timestamp();
+	while (!(params->died))
 	{
-		philo->status = dead;
-		print_message(philo);
-		philo->params->stop_flag = 1;
+		if (time_diff(i, timestamp()) >= params->time_sleep)
+			break;
+		usleep(50);
 	}
 }
 
-int	print_message(t_philo *philo)
+void    life(void *data, t_params *params)
 {
-	char	*str;
+    t_philo *philo;
 
-	if (philo->params->stop_flag == 1)
-		return (0);
-	sem_wait(philo->params->sem_console);
-	str = ft_itoa(get_time(philo->params->begin_time));
-	write(1, str, ft_strlen(str));
-	free(str);
-	write(1, " #", 2);
-	str = ft_itoa(philo->philo_id);
-	write(1, str, ft_strlen(str));
-	free(str);
-	write(1, " ", 1);
-	if (philo->status == thinking)
-		write(1, "is thinking\n", 12);
-	if (philo->status == eating)
-		write(1, "is eating\n", 10);
-	if (philo->status == sleeping)
-		write(1, "is sleeping\n", 12);
-	if (philo->status == dead)
-		write(1, "died\n", 5);
-	if (philo->status == taking_fork)
-		write(1, "has taken a fork\n", 17);
-	sem_post(philo->params->sem_console);
-	return (0);
-}
-
-int	finish_meal(t_philo *philo, int process_time)
-{
-	sem_post(philo->params->sem_forks);
-	sem_post(philo->params->sem_forks);
-	if (philo->status == dead)
-		return (0);
-	philo->meal_count++;
-	philo->status = sleeping;
-	philo->sleep_start = process_time;
-	if (philo->meal_count >= philo->params->meal_count)
-	{
-		philo->params->num_of_philo_eaten++;
+    philo = (t_philo*)data;
+    philo->last_meal = timestamp();
+	pthread_create(&(philo->thread_id), NULL, check_death, data);
+	if (philo->philo_id % 2) {
+		usleep(15000);
 	}
-	print_message(philo);
-	return (0);
+
+	while (params->died == 0 && params->all_ate != 1)
+    {
+        philo_eat(philo, params);
+        if (philo->meal_count >= params->must_eat && params->must_eat != -1)
+            break;
+        display_out(params, philo->philo_id, "sleeping");
+        philo_sleep(philo, params);
+        display_out(params, philo->philo_id, "thinking");
+    }
+    pthread_join(philo->thread_id, NULL);
+    if (params->died)
+		exit(1);
+	exit(0);
 }
 
-int	start_meal(t_philo *philo, int process_time)
+void    close_program(t_params *params)
 {
-	sem_wait(philo->params->sem_forks);
-	philo->status = taking_fork;
-	print_message(philo);
-	sem_wait(philo->params->sem_forks);
-	philo->status = taking_fork;
-	print_message(philo);
-	process_time = get_time(philo->params->begin_time);
-	check_philo(philo, process_time);
-	if (philo->status == dead)
-		finish_meal(philo, process_time);
-	philo->status = eating;
-	print_message(philo);
-	philo->last_meal = process_time;
-	return (0);
+    int i;
+    int ret;
+
+    i = -1;
+	while (++i < params->n_philo)
+	{
+		waitpid(-1, &ret, 0);
+		if (ret != 0)
+		{
+			i = -1;
+			while (++i < params->n_philo)
+				kill(params->philosophers[i].pid_id, SIGTERM);
+			break ;
+		}
+	}
+    sem_close(params->forks);
+    sem_close(params->console);
+    sem_close(params->check_meal);
+    sem_unlink("/philo_forks");
+	sem_unlink("/philo_write");
+	sem_unlink("/philo_mealcheck");
+}
+
+int     launch_program(t_params *params)
+{
+    t_philo *philo;
+    int         i;
+
+    i = -1;
+    philo = params->philosophers;
+    params->start_time = timestamp();
+    while (++i < params->n_philo)
+    {
+        philo[i].pid_id = fork();
+        if (philo[i].pid_id < 0)
+            return (1);
+        if (philo[i].pid_id == 0)
+            life(&(philo[i]), params);
+        usleep(100);
+    }
+    close_program(params);
+    return (0);
 }

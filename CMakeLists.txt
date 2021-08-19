@@ -8,11 +8,11 @@ include_directories(includes)
 add_executable(My_PHILO
         includes/errors.h
         includes/main_header.h
-        srcs/exception.c
-        srcs/check_functions.c
-        srcs/lifecycle_utils.c
-        srcs/actions.c
-        srcs/main.c
+        bonus_part/srcs/exception.c
+        bonus_part/srcs/check_functions.c
+        bonus_part/srcs/lifecycle_utils.c
+        bonus_part/srcs/actions.c
+        bonus_part/srcs/main.c
         libft/srcs/ft_atoi.c
         libft/srcs/ft_strlen.c
         libft/srcs/ft_calloc.c

@@ -1,84 +1,47 @@
 #include "bonus_header.h"
 
-int	clear_all(t_params *args)
+int     init_all(t_params *params)
 {
-	int	i;
+    int i;
 
-	i = 0;
-	while (i < args->num_of_philo)
-	{
-		if (pthread_detach(args->philos[i]) != 0)
-			return (-1);
-		i++;
-	}
-	free(args->philos);
-	free(args->philo_data);
-	return (0);
+    i = params->n_philo;
+    while (--i >= 0)
+    {
+        params->philosophers[i].meal_count = 0;
+		params->philosophers[i].last_meal = 0;
+		params->philosophers[i].t_philo = params;
+		params->philosophers[i].philo_id = i;
+    }
+    sem_unlink("/forks");
+    sem_unlink("/display");
+    sem_unlink("/check_meal");
+    params->forks = sem_open("/forks", O_CREAT, S_IRWXU, params->n_philo);
+    params->console = sem_open("/display", O_CREAT, S_IRWXU, 1);
+    params->check_meal = sem_open("/check_meal", O_CREAT, S_IRWXU, 1);
+    return (0);
 }
 
-int	run_observe_philo(t_params *params)
+int main(int argc, char *argv[])
 {
-	int	process_time;
-	int	i;
+    t_params philo;
 
-	while (params->stop_flag == 0)
-	{
-		if (params->meal_count != 0
-			&& (params->num_of_philo_eaten >= params->num_of_philo))
-		{
-			params->stop_flag = 1;
-			break ;
-		}
-		i = -1;
-		while (++i < params->num_of_philo)
-		{
-			process_time = get_time(params->begin_time);
-			check_philo(params->philo_data[i], process_time);
-		}
-		usleep(1);
-	}
-	return (0);
-}
-
-int	init_struct(t_params *params, int argc, char **argv)
-{
-	params->num_of_philo = ft_atoi(argv[1]);
-	params->time_to_die = ft_atoi(argv[2]);
-	params->time_to_eat = ft_atoi(argv[3]);
-	params->time_to_sleep = ft_atoi(argv[4]);
-	if (argc == 6)
-		params->meal_count = ft_atoi(argv[5]);
-	else
-		params->meal_count = 0;
-	params->stop_flag = 0;
-	params->num_of_philo_eaten = 0;
-	params->philo_data = malloc(sizeof(t_philo *) * params->num_of_philo);
-	params->philos = malloc(sizeof(pthread_t) * params->num_of_philo);
-	if (!params->philos || !params->philo_data)
-		return (-1);
-	else
-		return (0);
-}
-
-int	main(int argc, char *argv[])
-{
-	t_params	params;
-	int			i;
-
-	if (ft_check_params(argc, &argv[1]) == -1)
-		return (-1);
-	if (init_struct(&params, argc, argv) == -1)
-		return (-1);
-	i = 0;
-	gettimeofday(&params.begin_time, NULL);
-	while (i < params.num_of_philo)
-		i++;
-	sem_unlink("console");
-	sem_unlink("forks");
-	params.sem_console = sem_open("console", O_CREAT, 0666, 1);
-	params.sem_forks = sem_open("forks", O_CREAT, 0666, i);
-	run_lifecycle(&params);
-//	run_observe_philo(&params);
-	clear_all(&params);
-	return (0);
+    if (ft_check_params(argc, &argv[1]) == -1)
+    	return (-1);
+    if (get_arg(&philo, argc, argv) != 0)
+    {
+        ft_error(&philo);
+        return (1);
+    }
+    if (init_all(&philo))
+    {
+        ft_error(&philo);
+        return (1);
+    }
+    if (launch_program(&philo))
+    {
+        philo.error = LAUNCH;
+        ft_error(&philo);
+        return (1);
+    }
+    return (0);
 }

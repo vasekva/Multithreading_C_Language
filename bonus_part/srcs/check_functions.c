@@ -11,7 +11,7 @@ static int	check_philo_number(char *philo_number)
 		if (philo_number[0] > '3')
 			return (exception(FOUR));
 		if (philo_number[0] == '2'
-			&& (philo_number[2] != '0' || philo_number[1] != '0'))
+		&& (philo_number[2] != '0' || philo_number[1] != '0'))
 			return (exception(FOUR));
 	}
 	return (1);
@@ -63,7 +63,7 @@ int	ft_check_params(int argc, char *argv[])
 	if (check_philo_number(argv[0]) == -1)
 		return (-1);
 	if (check_eat_and_sleep_times(argv[2]) == -1
-		|| check_eat_and_sleep_times(argv[3]) == -1)
+	|| check_eat_and_sleep_times(argv[3]) == -1)
 		return (-1);
 	return (1);
 }
