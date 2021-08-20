@@ -11,8 +11,8 @@ OBJS_DIR		=	./objs/
 SRCS_FILES		= main.c actions.c lifecycle_utils.c \
 					exception.c check_functions.c
 
-BONUS_SRCS_FILES	= main.c utils_bonus.c init.c actions.c \
-                      			check_functions.c exception.c
+BONUS_SRCS_FILES	= main.c utils_bonus.c actions.c \
+                      	check_functions.c exception.c
 
 OBJS_FILES		= $(SRCS_FILES:.c=.o)
 

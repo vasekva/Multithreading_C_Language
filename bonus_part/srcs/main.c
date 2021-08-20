@@ -21,26 +21,37 @@ int     init_all(t_params *params)
     return (0);
 }
 
+int	init_struct(t_params *params, int argc, char **argv)
+{
+	params->n_philo = ft_atoi(argv[1]);
+	params->time_die = ft_atoi(argv[2]);
+	params->time_eat = ft_atoi(argv[3]);
+	params->time_sleep = ft_atoi(argv[4]);
+	if (argc == 6)
+		params->must_eat = ft_atoi(argv[5]);
+	else
+		params->must_eat = -1;
+	params->died = 0;
+	params->all_ate = 0;
+	return (0);
+}
+
 int main(int argc, char *argv[])
 {
-    t_params philo;
+    t_params params;
 
     if (ft_check_params(argc, &argv[1]) == -1)
     	return (-1);
-    if (get_arg(&philo, argc, argv) != 0)
+	init_struct(&params, argc, argv);
+	if (init_all(&params))
     {
-        ft_error(&philo);
+	ft_error(&params);
         return (1);
     }
-    if (init_all(&philo))
+    if (launch_program(&params))
     {
-        ft_error(&philo);
-        return (1);
-    }
-    if (launch_program(&philo))
-    {
-        philo.error = LAUNCH;
-        ft_error(&philo);
+    	params.error = LAUNCH;
+    	ft_error(&params);
         return (1);
     }
     return (0);
