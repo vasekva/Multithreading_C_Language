@@ -40,6 +40,7 @@ clean:
 fclean:			clean
 				rm -rf $(OBJS_DIR)
 				rm -rf $(NAME)
+				rm -rf $(BONUS_NAME)
 
 re:				fclean, all
 

@@ -20,7 +20,7 @@ typedef struct      s_philo
 {
 	int             philo_id;
 	long long       last_meal;
-	pid_t           pid_id;
+	pid_t           process_id;
 	int             meal_count;
 	//    int             left_fork;
 	//    int             right_fork;
@@ -31,8 +31,7 @@ typedef struct      s_philo
 
 typedef struct      s_params
 {
-	int             error;
-	int             n_philo;
+	int             num_of_philo;
 	int             time_die;
 	int             time_eat;
 	int             time_sleep;
@@ -47,26 +46,14 @@ typedef struct      s_params
 
 }                   t_params;
 
-typedef enum
-{
-	ARG_NUM =       100,
-	ARG_NOT_NUM =   102,
-	MUST_EAT =      103,
-	PHILO_NUM =     104,
-	MUTEX =         105,
-	LAUNCH =        106,
-	INIT =          107
-}                   err;
-
-int	exception(char *str);
+int					exception(char *str);
 int					ft_check_params(int argc, char *argv[]);
 int			        ft_atoi(const char *str);
 void                display_out(t_params *params, int id, char *str);
 long long	        timestamp(void);
-void                ft_error(t_params *params);
 long long	        timestamp(void);
 long long           time_diff(long long past, long long pres);
-int                 get_arg(t_params *params, int ac, char **av);
-int                 launch_program(t_params *params);
+int                 start_lifecycle(t_params *params);
+void    			close_lifecycle(t_params *params);
 
 #endif

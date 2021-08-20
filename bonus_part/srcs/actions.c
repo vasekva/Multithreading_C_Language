@@ -8,7 +8,7 @@ void    philo_eat(t_philo *philo, t_params *params)
     sem_wait(params->forks);
     display_out(params, philo->philo_id, "get right fork");
     sem_wait(params->check_meal);
-    display_out(params, philo->philo_id, "eating");
+    display_out(params, philo->philo_id, "is eating");
     sem_post(params->check_meal);
     t = timestamp();
     while (params->died == 0)
@@ -56,7 +56,7 @@ void    philo_sleep(t_philo *philo, t_params *params)
 {
 	long long i;
 
-	display_out(params, philo->philo_id, "sleeping");
+	display_out(params, philo->philo_id, "is sleeping");
 	i = timestamp();
 	while (!(params->died))
 	{
@@ -66,7 +66,7 @@ void    philo_sleep(t_philo *philo, t_params *params)
 	}
 }
 
-void    life(void *data, t_params *params)
+void    start_processes(void *data, t_params *params)
 {
     t_philo *philo;
 
@@ -82,9 +82,9 @@ void    life(void *data, t_params *params)
         philo_eat(philo, params);
         if (philo->meal_count >= params->must_eat && params->must_eat != -1)
             break;
-        display_out(params, philo->philo_id, "sleeping");
+        display_out(params, philo->philo_id, "is sleeping");
         philo_sleep(philo, params);
-        display_out(params, philo->philo_id, "thinking");
+        display_out(params, philo->philo_id, "is thinking");
     }
     pthread_join(philo->thread_id, NULL);
     if (params->died)
@@ -92,32 +92,7 @@ void    life(void *data, t_params *params)
 	exit(0);
 }
 
-void    close_program(t_params *params)
-{
-    int i;
-    int ret;
-
-    i = -1;
-	while (++i < params->n_philo)
-	{
-		waitpid(-1, &ret, 0);
-		if (ret != 0)
-		{
-			i = -1;
-			while (++i < params->n_philo)
-				kill(params->philosophers[i].pid_id, SIGTERM);
-			break ;
-		}
-	}
-    sem_close(params->forks);
-    sem_close(params->console);
-    sem_close(params->check_meal);
-    sem_unlink("/philo_forks");
-	sem_unlink("/philo_write");
-	sem_unlink("/philo_mealcheck");
-}
-
-int     launch_program(t_params *params)
+int     start_lifecycle(t_params *params)
 {
     t_philo *philo;
     int         i;
@@ -125,15 +100,14 @@ int     launch_program(t_params *params)
     i = -1;
     philo = params->philosophers;
     params->start_time = timestamp();
-    while (++i < params->n_philo)
+    while (++i < params->num_of_philo)
     {
-        philo[i].pid_id = fork();
-        if (philo[i].pid_id < 0)
+    	philo[i].process_id = fork();
+    	if (philo[i].process_id < 0)
             return (1);
-        if (philo[i].pid_id == 0)
-            life(&(philo[i]), params);
+    	if (philo[i].process_id == 0)
+        	start_processes(&(philo[i]), params);
         usleep(100);
     }
-    close_program(params);
     return (0);
 }
