@@ -3,15 +3,11 @@
 
 #include "errors.h"
 #include "libft.h"
-
-#include <sys/time.h>
 #include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <sys/time.h>
 #include <pthread.h>
+#include <stdlib.h>
 #include <semaphore.h>
-#include <sys/types.h>
 #include <signal.h>
 
 typedef struct	s_params t_params;
@@ -35,7 +31,7 @@ typedef struct      s_params
 	int             time_to_sleep;
 	int             meal_count;
 	int             died;
-	int             all_ate;
+	int             is_all_ate;
 	long long       begin_time;
 	t_philo			philosophers[250];
 	sem_t           *forks;
@@ -43,12 +39,19 @@ typedef struct      s_params
 	sem_t           *meal;
 }                   t_params;
 
+//// EXCEPTION.C
 int					exception(char *str);
+/// CHECK_FUNCTIONS.C
 int					ft_check_params(int argc, char *argv[]);
-void                print_message(t_params *params, int id, char *str);
+/**
+ * ACTIONS.C
+ */
+int                 start_lifecycle(t_params *params);
+/**
+ * LIFECYCLE_UTILS.C
+ */
 long long	        get_curr_time(void);
 long long           time_diff(long long before, long long now);
-int                 start_lifecycle(t_params *params);
-void    			close_lifecycle(t_params *params);
+void                print_message(t_params *params, int id, char *str);
 
 #endif

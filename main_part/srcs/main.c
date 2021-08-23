@@ -23,7 +23,7 @@ int	clear_all(t_params *args)
 	return (0);
 }
 
-int	run_observe_philo(t_params *params)
+static int	run_observe_philo(t_params *params)
 {
 	int	process_time;
 	int	i;

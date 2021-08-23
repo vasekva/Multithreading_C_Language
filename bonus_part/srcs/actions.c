@@ -1,6 +1,6 @@
 #include "bonus_header.h"
 
-void    philo_eat(t_philo *philo, t_params *params)
+static void    philo_eat(t_philo *philo, t_params *params)
 {
     long long t;
     sem_wait(params->forks);
@@ -23,7 +23,7 @@ void    philo_eat(t_philo *philo, t_params *params)
     sem_post(params->forks);
 }
 
-void    *check_death(void   *data)
+static void    *check_death(void   *data)
 {
     t_philo *philo;
     t_params *params;
@@ -43,7 +43,7 @@ void    *check_death(void   *data)
         sem_post(params->meal);
     	if (params->meal_count != -1 && philo->meal_count >= params->meal_count)
         {
-            params->all_ate = 1;
+    		params->is_all_ate = 1;
             break;
         }
         usleep(1000);
@@ -51,7 +51,7 @@ void    *check_death(void   *data)
     exit(0);
 }
 
-void    philo_sleep(t_philo *philo, t_params *params)
+static void    philo_sleep(t_philo *philo, t_params *params)
 {
 	long long i;
 
@@ -65,7 +65,7 @@ void    philo_sleep(t_philo *philo, t_params *params)
 	}
 }
 
-void    start_processes(void *data, t_params *params)
+static void    start_processes(void *data, t_params *params)
 {
     t_philo *philo;
 
@@ -75,7 +75,7 @@ void    start_processes(void *data, t_params *params)
 	if (philo->philo_id % 2) {
 		usleep(15000);
 	}
-	while (params->died == 0 && params->all_ate != 1)
+	while (params->died == 0 && params->is_all_ate != 1)
     {
         philo_eat(philo, params);
         if (philo->meal_count >= params->meal_count && params->meal_count != -1)

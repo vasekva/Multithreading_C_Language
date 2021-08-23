@@ -11,13 +11,10 @@ OBJS_DIR		=	./objs/
 SRCS_FILES		= main.c actions.c lifecycle_utils.c \
 					exception.c check_functions.c
 
-BONUS_SRCS_FILES	= main.c utils_bonus.c actions.c \
-                      	check_functions.c exception.c
-
 OBJS_FILES		= $(SRCS_FILES:.c=.o)
 
 MAIN_SRCS			= $(addprefix $(MAIN_SRCS_DIR), $(SRCS_FILES))
-BONUS_SRCS			= $(addprefix $(BONUS_SRCS_DIR), $(BONUS_SRCS_FILES))
+BONUS_SRCS			= $(addprefix $(BONUS_SRCS_DIR), $(SRCS_FILES))
 
 CC				=	gcc
 CFLAGS			=	-Wall -Wextra -Werror

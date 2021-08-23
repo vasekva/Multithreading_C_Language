@@ -10,7 +10,7 @@ int	get_time(struct timeval start)
 		- ((start.tv_sec * 1000) + (start.tv_usec / 1000)));
 }
 
-int	check_status(t_philo *philo, int process_time)
+static int	check_status(t_philo *philo, int process_time)
 {
 	if (process_time == -1)
 		return (-1);
@@ -38,7 +38,7 @@ int	check_status(t_philo *philo, int process_time)
 	return (0);
 }
 
-void	*start_processes(void *data)
+static void	*start_processes(void *data)
 {
 	t_philo	*philo;
 	int		process_time;

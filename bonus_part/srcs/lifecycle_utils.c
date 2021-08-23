@@ -1,0 +1,39 @@
+#include "bonus_header.h"
+
+static void	print_num_str(int number)
+{
+	char	*tmp;
+
+	tmp = ft_itoa(number);
+	write(1, tmp, ft_strlen(tmp));
+	free(tmp);
+}
+
+void    print_message(t_params *params, int id, char *str)
+{
+    sem_wait(params->console);
+	if (params->died == 0)
+	{
+		print_num_str((int)(get_curr_time() - params->begin_time));
+		write(1, " #", 2);
+		print_num_str(id + 1);
+		write(1, " ", 1);
+		write(1, str, ft_strlen(str));
+		write(1, "\n", 1);
+	}
+	sem_post(params->console);
+    return ;
+}
+
+long long time_diff(long long before, long long now)
+{
+	return (now - before);
+}
+
+long long	get_curr_time(void)
+{
+	struct timeval	t;
+
+	gettimeofday(&t, NULL);
+	return ((t.tv_sec * 1000) + (t.tv_usec / 1000));
+}

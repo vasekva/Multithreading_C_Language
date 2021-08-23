@@ -1,6 +1,6 @@
 #include "bonus_header.h"
 
-void    close_lifecycle(t_params *params)
+static void    close_lifecycle(t_params *params)
 {
 	int i;
 	int ret;
@@ -22,7 +22,7 @@ void    close_lifecycle(t_params *params)
 	sem_close(params->meal);
 }
 
-int     init_other(t_params *params)
+static int     init_other(t_params *params)
 {
     int i;
 
@@ -45,7 +45,7 @@ int     init_other(t_params *params)
     return (0);
 }
 
-int	init_dataset(t_params *params, int argc, char **argv)
+static int	init_dataset(t_params *params, int argc, char **argv)
 {
 	params->num_of_philo = ft_atoi(argv[1]);
 	params->time_to_die = ft_atoi(argv[2]);
@@ -56,7 +56,7 @@ int	init_dataset(t_params *params, int argc, char **argv)
 	else
 		params->meal_count = -1;
 	params->died = 0;
-	params->all_ate = 0;
+	params->is_all_ate = 0;
 	init_other(params);
 	return (0);
 }
