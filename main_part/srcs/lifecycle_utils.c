@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lifecycle_utils.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jberegon <jberegon@student.21-schoo>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/08/23 15:28:27 by jberegon          #+#    #+#             */
+/*   Updated: 2021/08/23 15:28:29 by jberegon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "main_header.h"
 
 int	get_time(struct timeval start)
@@ -59,13 +71,13 @@ static void	*start_processes(void *data)
 		process_time = get_time(philo->params->begin_time);
 		if (check_status(philo, process_time) == -1)
 			return (NULL);
-		usleep(1);
+		usleep(10);
 	}
 	free(data);
 	return (NULL);
 }
 
-int	 run_lifecycle(t_params *params)
+int	run_lifecycle(t_params *params)
 {
 	int		i;
 	t_philo	*philo;

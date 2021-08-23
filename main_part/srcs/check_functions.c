@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check_functions.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jberegon <jberegon@student.21-schoo>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/08/23 15:28:06 by jberegon          #+#    #+#             */
+/*   Updated: 2021/08/23 15:28:07 by jberegon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "main_header.h"
 
 static int	check_philo_number(char *philo_number)
@@ -40,15 +52,17 @@ static int	is_number_positive_array(char *argv[])
 	return (1);
 }
 
-static int	check_eat_and_sleep_times(char *str)
+static int	ft_check_all_timings(char *argv[])
 {
-	if (ft_strlen(str) <= 2)
-	{
-		if (ft_strlen(str) <= 1)
-			return (exception(FIVE));
-		if (ft_strlen(str) == 2 && str[0] < '6')
-			return (exception(FIVE));
-	}
+	int	time_to_die;
+	int	time_to_eat;
+	int	time_to_sleep;
+
+	time_to_die = ft_atoi(argv[1]);
+	time_to_eat = ft_atoi(argv[2]);
+	time_to_sleep = ft_atoi(argv[3]);
+	if (time_to_die < 60 || time_to_eat < 60 || time_to_sleep < 60)
+		return (-1);
 	return (0);
 }
 
@@ -58,12 +72,11 @@ int	ft_check_params(int argc, char *argv[])
 		return (exception(ONE));
 	if (argc > 6)
 		return (exception(TWO));
+	if (ft_check_all_timings(argv) == -1)
+		return (exception(FIVE));
 	if (is_number_positive_array(argv) == -1)
 		return (-1);
 	if (check_philo_number(argv[0]) == -1)
-		return (-1);
-	if (check_eat_and_sleep_times(argv[2]) == -1
-		|| check_eat_and_sleep_times(argv[3]) == -1)
 		return (-1);
 	return (1);
 }

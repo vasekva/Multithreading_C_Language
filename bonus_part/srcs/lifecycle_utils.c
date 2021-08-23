@@ -49,12 +49,3 @@ long	get_curr_time(void)
 	gettimeofday(&time, NULL);
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
-
-void	ft_usleep(long time)
-{
-	long	t;
-
-	t = get_curr_time();
-	while (get_curr_time() - t < time)
-		usleep(100);
-}

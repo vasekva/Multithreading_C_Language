@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main_header.h                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jberegon <jberegon@student.21-schoo>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/08/23 15:31:47 by jberegon          #+#    #+#             */
+/*   Updated: 2021/08/23 15:31:49 by jberegon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MAIN_HEADER_H
 # define MAIN_HEADER_H
 
 # include "errors.h"
-# include "libft.h"
 # include <unistd.h>
 # include <sys/time.h>
+# include <stdlib.h>
 # include <pthread.h>
 
 typedef struct s_params	t_params;
@@ -47,15 +59,29 @@ typedef struct s_params
 	struct timeval	begin_time;
 }				t_params;
 
-//// EXCEPTION.C
-int		exception(char *str);
 /// CHECK_FUNCTIONS.C
 int		ft_check_params(int argc, char *argv[]);
+
 /**
  * LIFECYCLE_UTILS.C
  */
 int		run_lifecycle(t_params *params);
 int		get_time(struct timeval start);
+
+/**
+ * LIFECYCLE_UTILS_1.C
+ */
+int		ft_atoi(const char *str);
+void	*ft_calloc(size_t count, size_t size);
+size_t	ft_strlen(const char *str);
+void	*ft_memset(void *destination, int c, size_t n);
+
+/**
+ * LIFECYCLE_UTILS_2.C
+ */
+char	*ft_itoa(int n);
+int		exception(char *str);
+
 /**
  * ACTIONS.C
  */

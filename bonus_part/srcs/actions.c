@@ -59,7 +59,7 @@ static void	*check_death(void *data)
 			params->is_all_ate = 1;
 			break ;
 		}
-		ft_usleep(1000);
+		usleep(1000);
 	}
 	exit(0);
 }
@@ -117,7 +117,7 @@ int	start_lifecycle(t_params *params)
 			return (1);
 		if (philo[i].process_id == 0)
 			start_processes(&(philo[i]), params);
-		ft_usleep(100);
+		usleep(100);
 	}
 	return (0);
 }
