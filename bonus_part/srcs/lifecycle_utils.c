@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lifecycle_utils.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jberegon <jberegon@student.21-schoo>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/08/23 13:23:51 by jberegon          #+#    #+#             */
+/*   Updated: 2021/08/23 13:23:53 by jberegon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "bonus_header.h"
 
 static void	print_num_str(int number)
@@ -9,9 +21,9 @@ static void	print_num_str(int number)
 	free(tmp);
 }
 
-void    print_message(t_params *params, int id, char *str)
+void	print_message(t_params *params, int id, char *str)
 {
-    sem_wait(params->console);
+	sem_wait(params->console);
 	if (params->died == 0)
 	{
 		print_num_str((int)(get_curr_time() - params->begin_time));
@@ -22,10 +34,10 @@ void    print_message(t_params *params, int id, char *str)
 		write(1, "\n", 1);
 	}
 	sem_post(params->console);
-    return ;
+	return ;
 }
 
-long long time_diff(long long before, long long now)
+long long	time_diff(long long before, long long now)
 {
 	return (now - before);
 }

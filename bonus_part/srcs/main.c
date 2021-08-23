@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jberegon <jberegon@student.21-schoo>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/08/23 13:23:58 by jberegon          #+#    #+#             */
+/*   Updated: 2021/08/23 13:24:00 by jberegon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "bonus_header.h"
 
-static void    close_lifecycle(t_params *params)
+static void	close_lifecycle(t_params *params)
 {
-	int i;
-	int ret;
+	int	i;
+	int	ret;
 
 	i = -1;
 	while (++i < params->num_of_philo)
@@ -22,27 +34,27 @@ static void    close_lifecycle(t_params *params)
 	sem_close(params->meal);
 }
 
-static int     init_other(t_params *params)
+static int	init_other(t_params *params)
 {
-    int i;
+	int	i;
 
-    i = -1;
-    while (++i < params->num_of_philo)
-    {
+	i = -1;
+	while (++i < params->num_of_philo)
+	{
 		params->philosophers[i].philo_id = i;
 		params->philosophers[i].last_meal = 0;
 		params->philosophers[i].process_id = 0;
-        params->philosophers[i].meal_count = 0;
+		params->philosophers[i].meal_count = 0;
 		params->philosophers[i].t_philo = params;
 		params->philosophers[i].thread_id = NULL;
-    }
-    sem_unlink("forks");
-    sem_unlink("console");
-    sem_unlink("meal");
-    params->forks = sem_open("forks", O_CREAT, S_IRWXU, params->num_of_philo);
-    params->console = sem_open("console", O_CREAT, S_IRWXU, 1);
-    params->meal = sem_open("meal", O_CREAT, S_IRWXU, 1);
-    return (0);
+	}
+	sem_unlink("forks");
+	sem_unlink("console");
+	sem_unlink("meal");
+	params->forks = sem_open("forks", O_CREAT, S_IRWXU, params->num_of_philo);
+	params->console = sem_open("console", O_CREAT, S_IRWXU, 1);
+	params->meal = sem_open("meal", O_CREAT, S_IRWXU, 1);
+	return (0);
 }
 
 static int	init_dataset(t_params *params, int argc, char **argv)
@@ -61,18 +73,18 @@ static int	init_dataset(t_params *params, int argc, char **argv)
 	return (0);
 }
 
-int main(int argc, char *argv[])
+int	main(int argc, char *argv[])
 {
-    t_params params;
+	t_params	params;
 
-    if (ft_check_params(argc, &argv[1]) == -1)
-    	return (-1);
-    init_dataset(&params, argc, argv);
-    if (start_lifecycle(&params))
-    {
+	if (ft_check_params(argc, &argv[1]) == -1)
+		return (-1);
+	init_dataset(&params, argc, argv);
+	if (start_lifecycle(&params))
+	{
 		exception(SIX);
-        return (1);
-    }
-    close_lifecycle(&params);
-    return (0);
+		return (1);
+	}
+	close_lifecycle(&params);
+	return (0);
 }
