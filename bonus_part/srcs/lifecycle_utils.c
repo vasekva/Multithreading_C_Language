@@ -37,15 +37,24 @@ void	print_message(t_params *params, int id, char *str)
 	return ;
 }
 
-long long	time_diff(long long before, long long now)
+long	time_diff(long before, long now)
 {
 	return (now - before);
 }
 
-long long	get_curr_time(void)
+long	get_curr_time(void)
 {
-	struct timeval	t;
+	struct timeval	time;
 
-	gettimeofday(&t, NULL);
-	return ((t.tv_sec * 1000) + (t.tv_usec / 1000));
+	gettimeofday(&time, NULL);
+	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
+}
+
+void	ft_usleep(long time)
+{
+	long	t;
+
+	t = get_curr_time();
+	while (get_curr_time() - t < time)
+		usleep(100);
 }

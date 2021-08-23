@@ -16,7 +16,7 @@ typedef struct      s_philo
 {
 	int             	philo_id;
 	int             	meal_count;
-	long long       	last_meal;
+	long       			last_meal;
 	pid_t          		process_id;
 	t_params			*t_philo;
 	pthread_t			thread_id;
@@ -32,7 +32,7 @@ typedef struct      s_params
 	int             meal_count;
 	int             died;
 	int             is_all_ate;
-	long long       begin_time;
+	long      	 	begin_time;
 	t_philo			philosophers[250];
 	sem_t           *forks;
 	sem_t           *console;
@@ -50,8 +50,9 @@ int                 start_lifecycle(t_params *params);
 /**
  * LIFECYCLE_UTILS.C
  */
-long long	        get_curr_time(void);
-long long           time_diff(long long before, long long now);
+long				get_curr_time(void);
+long				time_diff(long before, long now);
 void                print_message(t_params *params, int id, char *str);
+void				ft_usleep(long time);
 
 #endif

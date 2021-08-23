@@ -14,7 +14,7 @@
 
 static void	philo_eat(t_philo *philo, t_params *params)
 {
-	long long	t;
+	long	t;
 
 	sem_wait(params->forks);
 	print_message(params, philo->philo_id, "get left fork");
@@ -59,14 +59,14 @@ static void	*check_death(void *data)
 			params->is_all_ate = 1;
 			break ;
 		}
-		usleep(1000);
+		ft_usleep(1000);
 	}
 	exit(0);
 }
 
 static void	philo_sleep(t_philo *philo, t_params *params)
 {
-	long long	i;
+	long	i;
 
 	print_message(params, philo->philo_id, "is sleeping");
 	i = get_curr_time();
@@ -117,7 +117,7 @@ int	start_lifecycle(t_params *params)
 			return (1);
 		if (philo[i].process_id == 0)
 			start_processes(&(philo[i]), params);
-		usleep(100);
+		ft_usleep(100);
 	}
 	return (0);
 }
