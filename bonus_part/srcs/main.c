@@ -19,7 +19,7 @@ void    close_lifecycle(t_params *params)
 	}
 	sem_close(params->forks);
 	sem_close(params->console);
-	sem_close(params->check_meal);
+	sem_close(params->meal);
 }
 
 int     init_other(t_params *params)
@@ -38,23 +38,23 @@ int     init_other(t_params *params)
     }
     sem_unlink("forks");
     sem_unlink("console");
-    sem_unlink("check_meal");
+    sem_unlink("meal");
     params->forks = sem_open("forks", O_CREAT, S_IRWXU, params->num_of_philo);
     params->console = sem_open("console", O_CREAT, S_IRWXU, 1);
-    params->check_meal = sem_open("check_meal", O_CREAT, S_IRWXU, 1);
+    params->meal = sem_open("meal", O_CREAT, S_IRWXU, 1);
     return (0);
 }
 
 int	init_dataset(t_params *params, int argc, char **argv)
 {
 	params->num_of_philo = ft_atoi(argv[1]);
-	params->time_die = ft_atoi(argv[2]);
-	params->time_eat = ft_atoi(argv[3]);
-	params->time_sleep = ft_atoi(argv[4]);
+	params->time_to_die = ft_atoi(argv[2]);
+	params->time_to_eat = ft_atoi(argv[3]);
+	params->time_to_sleep = ft_atoi(argv[4]);
 	if (argc == 6)
-		params->must_eat = ft_atoi(argv[5]);
+		params->meal_count = ft_atoi(argv[5]);
 	else
-		params->must_eat = -1;
+		params->meal_count = -1;
 	params->died = 0;
 	params->all_ate = 0;
 	init_other(params);

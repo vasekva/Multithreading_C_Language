@@ -1,11 +1,12 @@
 #include "bonus_header.h"
 
-void    display_out(t_params *params, int id, char *str)
+void    print_message(t_params *params, int id, char *str)
 {
+
     sem_wait(params->console);
 	if (params->died == 0)
 	{
-		printf("%lli ", timestamp() - params->start_time);
+		printf("%lli ", get_curr_time() - params->begin_time);
 		printf("#%d ", id + 1);
 		printf("%s\n", str);
 	}
@@ -13,12 +14,12 @@ void    display_out(t_params *params, int id, char *str)
     return ;
 }
 
-long long time_diff(long long past, long long pres)
+long long time_diff(long long before, long long now)
 {
-    return (pres - past);
+	return (now - before);
 }
 
-long long	timestamp(void)
+long long	get_curr_time(void)
 {
 	struct timeval	t;
 
