@@ -45,7 +45,7 @@ static int	init_other(t_params *params)
 		params->philosophers[i].last_meal = 0;
 		params->philosophers[i].process_id = 0;
 		params->philosophers[i].meal_count = 0;
-		params->philosophers[i].t_philo = params;
+		params->philosophers[i].s_params = params;
 		params->philosophers[i].thread_id = NULL;
 	}
 	sem_unlink("forks");
@@ -67,7 +67,7 @@ static int	init_dataset(t_params *params, int argc, char **argv)
 		params->meal_count = ft_atoi(argv[5]);
 	else
 		params->meal_count = -1;
-	params->died = 0;
+	params->stop_flag = 0;
 	params->is_all_ate = 0;
 	init_other(params);
 	return (0);

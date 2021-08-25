@@ -1,38 +1,50 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   actions.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jberegon <jberegon@student.21-schoo>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/08/25 18:44:53 by jberegon          #+#    #+#             */
+/*   Updated: 2021/08/25 18:44:58 by jberegon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "tmp_header.h"
 
-void    philo_eat(struct_philo *phi_str, t_philo *philo)
+void    philo_eat(t_philo *philo, t_params *params)
 {
-    long long i;
+	long i;
 
-    pthread_mutex_lock(&(philo->forks[phi_str->left_fork_id]));
-    display_out(philo, phi_str->philo_id, "has taken a fork");
-    pthread_mutex_lock(&(philo->forks[phi_str->right_fork_id]));
-	display_out(philo, phi_str->philo_id, "has taken a fork");
-	pthread_mutex_lock(&(philo->mutex_meal));
-	display_out(philo, phi_str->philo_id, "is eating");
-	phi_str->last_meal = timestamp();
-	pthread_mutex_unlock(&(philo->mutex_meal));
-    i = timestamp();
-	while (!(philo->died))
+    pthread_mutex_lock(&(params->forks[philo->left_fork_id]));
+    display_out(params, philo->philo_id, "took the left fork");
+    pthread_mutex_lock(&(params->forks[philo->right_fork_id]));
+    display_out(params, philo->philo_id, "took the right fork");
+	pthread_mutex_lock(&(params->mutex_meal));
+	display_out(params, philo->philo_id, "is eating");
+	philo->last_meal = get_curr_time();
+	pthread_mutex_unlock(&(params->mutex_meal));
+	i = get_curr_time();
+    while (!params->stop_flag)
     {
-		if (time_diff(i, timestamp()) >= philo->time_to_eat)
+    	if (time_diff(i, get_curr_time()) >= params->time_to_eat)
             break;
         usleep(50);
     }
-	(phi_str->meal_count)++;
-	pthread_mutex_unlock(&(philo->forks[phi_str->left_fork_id]));
-	pthread_mutex_unlock(&(philo->forks[phi_str->right_fork_id]));
+	(philo->meal_count)++;
+	pthread_mutex_unlock(&(params->forks[philo->left_fork_id]));
+	pthread_mutex_unlock(&(params->forks[philo->right_fork_id]));
 }
 
-void    philo_sleep(t_philo *philo, struct_philo *p)
+void    philo_sleep(t_params *params, t_philo *philo)
 {
-    long long i;
+    long i;
 
-    display_out(philo, p->philo_id, "sleeping");
-    i = timestamp();
-    while (!(philo->died))
+    display_out(params, philo->philo_id, "sleeping");
+    i = get_curr_time();
+    while (!params->stop_flag)
     {
-        if (time_diff(i, timestamp()) >= philo->time_to_sleep)
+    	if (time_diff(i, get_curr_time()) >= params->time_to_sleep)
             break;
         usleep(50);
     }
@@ -40,19 +52,19 @@ void    philo_sleep(t_philo *philo, struct_philo *p)
 
 void    *life(void  *data)
 {
-    struct_philo    *phi_str;
-    t_philo         *philo;
+    t_philo    *philo;
+    t_params         *params;
 
-    phi_str = (struct_philo  *)data;
-    philo = phi_str->t_philo;
-    if (phi_str->philo_id % 2)
+    philo = (t_philo  *)data;
+    params = philo->s_params;
+    if (philo->philo_id % 2)
         usleep(15000);
-    while (!(philo->died))
+    while (!params->stop_flag)
     {
-        philo_eat(phi_str, philo);
-        if (philo->is_all_ate)
+    	philo_eat(philo, params);
+        if (params->is_all_ate)
             break;
-        philo_sleep(philo, phi_str);
+        philo_sleep(params, philo);
 //        display_out(new_main_part, phi_str->philo_id, "eating");
     }
     return (NULL);

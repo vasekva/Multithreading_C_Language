@@ -30,7 +30,7 @@ typedef struct s_philo
 	int			meal_count;
 	long		last_meal;
 	pid_t		process_id;
-	t_params	*t_philo;
+	t_params	*s_params;
 	pthread_t	thread_id;
 
 }	t_philo;
@@ -42,7 +42,7 @@ typedef struct s_params
 	int		time_to_eat;
 	int		time_to_sleep;
 	int		meal_count;
-	int		died;
+	int		stop_flag;
 	int		is_all_ate;
 	long	begin_time;
 	t_philo	philosophers[250];

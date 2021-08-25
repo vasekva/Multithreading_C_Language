@@ -17,14 +17,14 @@ static void	philo_eat(t_philo *philo, t_params *params)
 	long	t;
 
 	sem_wait(params->forks);
-	print_message(params, philo->philo_id, "get left fork");
+	print_message(params, philo->philo_id, "took the left fork");
 	sem_wait(params->forks);
-	print_message(params, philo->philo_id, "get right fork");
+	print_message(params, philo->philo_id, "took the right fork");
 	sem_wait(params->meal);
 	print_message(params, philo->philo_id, "is eating");
 	sem_post(params->meal);
 	t = get_curr_time();
-	while (params->died == 0)
+	while (!params->stop_flag)
 	{
 		if (time_diff(t, get_curr_time()) >= params->time_to_eat)
 			break ;
@@ -42,14 +42,14 @@ static void	*check_death(void *data)
 	t_params	*params;
 
 	philo = (t_philo *)data;
-	params = philo->t_philo;
+	params = philo->s_params;
 	while (1)
 	{
 		sem_wait(params->meal);
 		if (time_diff(philo->last_meal, get_curr_time()) > params->time_to_die)
 		{
 			print_message(params, philo->philo_id, "is died");
-			params->died = 1;
+			params->stop_flag = 1;
 			sem_wait(params->console);
 			exit(1);
 		}
@@ -70,7 +70,7 @@ static void	philo_sleep(t_philo *philo, t_params *params)
 
 	print_message(params, philo->philo_id, "is sleeping");
 	i = get_curr_time();
-	while (!(params->died))
+	while (!(params->stop_flag))
 	{
 		if (time_diff(i, get_curr_time()) >= params->time_to_sleep)
 			break ;
@@ -87,7 +87,7 @@ static void	start_processes(void *data, t_params *params)
 	pthread_create(&(philo->thread_id), NULL, check_death, data);
 	if (philo->philo_id % 2)
 		usleep(15000);
-	while (params->died == 0 && params->is_all_ate != 1)
+	while (!params->stop_flag && params->is_all_ate != 1)
 	{
 		philo_eat(philo, params);
 		if (philo->meal_count >= params->meal_count && params->meal_count != -1)
@@ -97,7 +97,7 @@ static void	start_processes(void *data, t_params *params)
 		print_message(params, philo->philo_id, "is thinking");
 	}
 	pthread_join(philo->thread_id, NULL);
-	if (params->died)
+	if (params->stop_flag)
 		exit(1);
 	exit(0);
 }

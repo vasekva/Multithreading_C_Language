@@ -24,7 +24,7 @@ static void	print_num_str(int number)
 void	print_message(t_params *params, int id, char *str)
 {
 	sem_wait(params->console);
-	if (params->died == 0)
+	if (!params->stop_flag)
 	{
 		print_num_str((int)(get_curr_time() - params->begin_time));
 		write(1, " #", 2);

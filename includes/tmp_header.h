@@ -10,54 +10,42 @@
 # include <string.h>
 # include <pthread.h>
 
-struct s_philo;
+typedef struct s_params t_params;
 
-typedef struct s_struct_philo
+typedef struct s_philo
 {  
     int         philo_id;
     int         meal_count;
     int         left_fork_id;
     int         right_fork_id;
     long long   last_meal;
-    struct s_philo *t_philo;
+    t_params	*s_params;
     pthread_t    thread_id;  
     
-}               struct_philo;
+}               t_philo;
 
-typedef enum 
-{
-    ARG_NUM = 100,
-    ARG_NOT_NUM = 102,
-    MUST_EAT = 103,
-    PHILO_NUM = 104,
-    MUTEX = 105,
-    LAUNCH = 106
-}           err;
-
-typedef struct  s_philo
+typedef struct  s_params
 {
     int         num_of_philo;
     int         time_to_die;
     int         time_to_eat;
     int         time_to_sleep;
     int         must_eat;
-//    int         error;
-    int         died;
+    int         stop_flag;
     int         is_all_ate;
     long long   begin_time;
     pthread_mutex_t mutex_meal;
     pthread_mutex_t forks[250];
     pthread_mutex_t console;
-    struct_philo philosophers[250];
+    t_philo philosophers[250];
 
-}               t_philo;
+}               t_params;
 
-void		get_philosophers(t_philo *philo);
-int			init_mutex(t_philo *philo);
-int			get_arg(t_philo *philo, int ac, char **av);
-void		display_out(t_philo *philo, int id, char *str);
-long long	time_diff(long long past, long long pres);
-long long	timestamp(void);
+void		get_philosophers(t_params *params);
+int    		init_mutex(t_params *params);
+void    	display_out(t_params *params, int id, char *str);
+long		time_diff(long before, long now);
+long		get_curr_time(void);
 void		*life(void  *philosopher);
 
 /// CHECK_FUNCTIONS.C
