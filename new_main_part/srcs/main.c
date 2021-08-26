@@ -1,6 +1,36 @@
 #include "tmp_header.h"
 
-int	init_struct(t_philo *philo, int argc, char **argv)
+void	clear_all(t_philo *philo)
+{
+	int	i;
+
+	pthread_mutex_lock(&philo->dead_philo);
+	pthread_mutex_destroy(&philo->dead_philo);
+	pthread_mutex_destroy(&philo->message);
+	i = 0;
+	while (i < philo->num_of_philo)
+	{
+		pthread_mutex_destroy(&philo->forks[i]);
+		i++;
+	}
+	pthread_mutex_destroy(&philo->dead_philo);
+	free(philo->forks);
+	free(philo->s_params);
+}
+
+void	init_mutexes(t_philo *philo)
+{
+	int	i;
+
+	i = -1;
+	while (++i < philo->num_of_philo)
+		pthread_mutex_init(&philo->forks[i], NULL);
+	pthread_mutex_init(&philo->message, NULL);
+	pthread_mutex_init(&philo->dead_philo, NULL);
+	pthread_mutex_lock(&philo->dead_philo);
+}
+
+int	init_all(t_philo *philo, int argc, char **argv)
 {
 	int i;
 
@@ -15,12 +45,15 @@ int	init_struct(t_philo *philo, int argc, char **argv)
 	i = -1;
 	philo->forks = (pthread_mutex_t *)
 			malloc(sizeof(pthread_mutex_t) * philo->num_of_philo);
-	if (!philo->forks)
+	philo->s_params = (t_params *)
+			malloc(sizeof(t_params) * philo->num_of_philo);
+	if (philo->s_params == NULL || philo->forks == NULL)
 		return (-1);
 	while (++i < philo->num_of_philo)
 		pthread_mutex_init(&philo->forks[i], NULL);
 	pthread_mutex_init(philo->forks, NULL);
 	pthread_mutex_init(&philo->message, NULL);
+	init_mutexes(philo);
 	return (0);
 }
 
@@ -30,13 +63,9 @@ int	main(int argc, char **argv)
 
 	if (ft_check_params(argc, &argv[1]) == -1)
 		return (-1);
-	if (init_struct(&philo, argc, argv) == -1)
+	if (init_all(&philo, argc, argv) == -1)
 		return (-1);
-	philo.s_params = (t_params *)malloc(sizeof(t_params) * philo.num_of_philo);
-	if (philo.s_params == NULL || philo.forks == NULL)
-		return (-1);
-	start_game(&philo);
-	pthread_mutex_lock(&philo.dead_philo);
-	free_clean(&philo);
+	run_lifecycle(&philo);
+	clear_all(&philo);
 	return (0);
 }

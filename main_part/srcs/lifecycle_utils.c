@@ -82,8 +82,8 @@ int	run_lifecycle(t_params *params)
 	int		i;
 	t_philo	*philo;
 
-	i = 0;
-	while (i < params->num_of_philo)
+	i = -1;
+	while (++i < params->num_of_philo)
 	{
 		philo = malloc(sizeof(t_philo));
 		philo->philo_id = i + 1;
@@ -95,7 +95,6 @@ int	run_lifecycle(t_params *params)
 		params->philo_data[i] = philo;
 		pthread_create(&params->philos[i], NULL, start_processes, philo);
 		usleep(100);
-		i++;
 	}
 	return (0);
 }

@@ -1,6 +1,6 @@
 #include "tmp_header.h"
 
-void	message(char *str, t_params *s_params)
+void	print_status(t_params *s_params, char *str)
 {
 	pthread_mutex_lock(&s_params->all->message);
 	printf("%ld %d %s\n", get_time() - s_params->all->start, s_params->nbr, str);
@@ -13,18 +13,18 @@ void	loop_live(void *tmp)
 
 	s_params = (t_params *)tmp;
 	pthread_mutex_lock(s_params->left_fork);
-	message("has taken a left fork", tmp);
+	print_status(tmp, "took the left fork");
 	pthread_mutex_lock(s_params->right_fork);
-	message("has taken a right fork", tmp);
-	message("is eating", tmp);
+	print_status(tmp, "took the right fork");
+	print_status(tmp, "is eating");
 	usleep(s_params->all->time_to_eat * 1000);
 	pthread_mutex_unlock(s_params->right_fork);
 	pthread_mutex_unlock(s_params->left_fork);
 	s_params->eaten += 1;
 	s_params->time_to_death = get_time() + s_params->all->time_to_die;
-	message("is sleeping", tmp);
+	print_status(tmp, "is sleeping");
 	usleep(s_params->all->time_to_sleep * 1000);
-	message("is thinking", tmp);
+	print_status(tmp, "is thinking");
 }
 
 void	*checkers(void *tmp)

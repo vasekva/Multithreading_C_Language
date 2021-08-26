@@ -43,12 +43,11 @@ typedef struct s_params
 int	exception(char *str);
 
 int			ft_digits(char *str);
-void		start_game(t_philo *philo);
+void		run_lifecycle(t_philo *philo);
 long		get_time(void);
-void		message(char *str, t_params *s_params);
+void		print_status(t_params *s_params, char *str);
 void		loop_live(void *tmp);
 void		*checkers(void *tmp);
-void		free_clean(t_philo *philo);
 
 /// CHECK_FUNCTIONS.C
 int		ft_check_params(int argc, char *argv[]);
