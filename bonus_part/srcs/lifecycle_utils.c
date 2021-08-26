@@ -37,7 +37,7 @@ void	print_message(t_params *params, int id, char *str)
 	return ;
 }
 
-long	time_diff(long before, long now)
+long	get_diff(long before, long now)
 {
 	return (now - before);
 }

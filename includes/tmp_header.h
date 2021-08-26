@@ -1,52 +1,54 @@
-# ifndef PHILO_H
-# define PHILO_H
+#ifndef TMP_HEADER_H
+# define TMP_HEADER_H
 
-# include "errors.h"
-
-# include <sys/time.h>
-# include <unistd.h>
-# include <stdio.h>
-# include <stdlib.h>
 # include <string.h>
+# include <sys/time.h>
+# include <stdlib.h>
+# include <stdio.h>
+# include <unistd.h>
 # include <pthread.h>
+# include "errors.h"
 
 typedef struct s_params t_params;
 
 typedef struct s_philo
-{  
-    int         philo_id;
-    int         meal_count;
-    int         left_fork_id;
-    int         right_fork_id;
-    long long   last_meal;
-    t_params	*s_params;
-    pthread_t    thread_id;  
-    
-}               t_philo;
-
-typedef struct  s_params
 {
-    int         num_of_philo;
-    int         time_to_die;
-    int         time_to_eat;
-    int         time_to_sleep;
-    int         must_eat;
-    int         stop_flag;
-    int         is_all_ate;
-    long long   begin_time;
-    pthread_mutex_t mutex_meal;
-    pthread_mutex_t forks[250];
-    pthread_mutex_t console;
-    t_philo philosophers[250];
+	int			num_of_philo;
+	long		start;
+	long		time_to_eat;
+	long		time_to_sleep;
+	int			meal_count;
+	long		time_to_die;
+	t_params	*s_params;
+	pthread_mutex_t	*forks;
+	pthread_mutex_t	dead_philo;
+	pthread_mutex_t	message;
+}	t_philo;
 
-}               t_params;
+typedef struct s_params
+{
+	int				how_dead;
+	int				even;
+	int				eaten;
+	int				nbr;
+	long			last_eat;
+	long			time_to_death;
+	pthread_t		thread;
+	pthread_mutex_t	check;
+	pthread_mutex_t	*right_fork;
+	pthread_mutex_t	*left_fork;
+	t_philo			*all;
+}				t_params;
 
-void		get_philosophers(t_params *params);
-int    		init_mutex(t_params *params);
-void    	display_out(t_params *params, int id, char *str);
-long		time_diff(long before, long now);
-long		get_curr_time(void);
-void		*life(void  *philosopher);
+int	exception(char *str);
+
+int			ft_digits(char *str);
+void		start_game(t_philo *philo);
+long		get_time(void);
+void		message(char *str, t_params *s_params);
+void		loop_live(void *tmp);
+void		*checkers(void *tmp);
+void		free_clean(t_philo *philo);
 
 /// CHECK_FUNCTIONS.C
 int		ft_check_params(int argc, char *argv[]);
@@ -60,10 +62,5 @@ void	*ft_calloc(size_t count, size_t size);
 size_t	ft_strlen(const char *str);
 void	*ft_memset(void *destination, int c, size_t n);
 
-/**
- * LIFECYCLE_UTILS_2.C
- */
-char	*ft_itoa(int n);
-int		exception(char *str);
 
-# endif
+#endif

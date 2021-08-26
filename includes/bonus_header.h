@@ -63,7 +63,7 @@ int		start_lifecycle(t_params *params);
  * LIFECYCLE_UTILS.C
  */
 long	get_curr_time(void);
-long	time_diff(long before, long now);
+long	get_diff(long before, long now);
 void	print_message(t_params *params, int id, char *str);
 
 /**

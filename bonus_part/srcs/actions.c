@@ -14,7 +14,7 @@
 
 static void	philo_eat(t_philo *philo, t_params *params)
 {
-	long	t;
+	long	begin_time;
 
 	sem_wait(params->forks);
 	print_message(params, philo->philo_id, "took the left fork");
@@ -23,17 +23,17 @@ static void	philo_eat(t_philo *philo, t_params *params)
 	sem_wait(params->meal);
 	print_message(params, philo->philo_id, "is eating");
 	sem_post(params->meal);
-	t = get_curr_time();
+	begin_time = get_curr_time();
 	while (!params->stop_flag)
 	{
-		if (time_diff(t, get_curr_time()) >= params->time_to_eat)
+		if (get_diff(begin_time, get_curr_time()) >= params->time_to_eat)
 			break ;
 		usleep(50);
 	}
+	sem_post(params->forks);
+	sem_post(params->forks);
 	philo->meal_count++;
-	sem_post(params->forks);
 	philo->last_meal = get_curr_time();
-	sem_post(params->forks);
 }
 
 static void	*check_death(void *data)
@@ -46,7 +46,7 @@ static void	*check_death(void *data)
 	while (1)
 	{
 		sem_wait(params->meal);
-		if (time_diff(philo->last_meal, get_curr_time()) > params->time_to_die)
+		if (get_diff(philo->last_meal, get_curr_time()) > params->time_to_die)
 		{
 			print_message(params, philo->philo_id, "is died");
 			params->stop_flag = 1;
@@ -66,13 +66,13 @@ static void	*check_death(void *data)
 
 static void	philo_sleep(t_philo *philo, t_params *params)
 {
-	long	i;
+	long	begin_time;
 
 	print_message(params, philo->philo_id, "is sleeping");
-	i = get_curr_time();
-	while (!(params->stop_flag))
+	begin_time = get_curr_time();
+	while (!params->stop_flag)
 	{
-		if (time_diff(i, get_curr_time()) >= params->time_to_sleep)
+		if (get_diff(begin_time, get_curr_time()) >= params->time_to_sleep)
 			break ;
 		usleep(50);
 	}
@@ -104,8 +104,8 @@ static void	start_processes(void *data, t_params *params)
 
 int	start_lifecycle(t_params *params)
 {
-	t_philo	*philo;
 	int		i;
+	t_philo	*philo;
 
 	i = -1;
 	philo = params->philosophers;
