@@ -1,36 +1,35 @@
 #include "tmp_header.h"
 
-void	clear_all(t_philo *philo)
+static void	clear_all(t_philo *philo)
 {
 	int	i;
 
 	pthread_mutex_lock(&philo->dead_philo);
 	pthread_mutex_destroy(&philo->dead_philo);
-	pthread_mutex_destroy(&philo->message);
-	i = 0;
-	while (i < philo->num_of_philo)
+	pthread_mutex_destroy(&philo->console);
+	i = -1;
+	while (++i < philo->num_of_philo)
 	{
 		pthread_mutex_destroy(&philo->forks[i]);
-		i++;
 	}
 	pthread_mutex_destroy(&philo->dead_philo);
 	free(philo->forks);
 	free(philo->s_params);
 }
 
-void	init_mutexes(t_philo *philo)
+static void	init_mutexes(t_philo *philo)
 {
 	int	i;
 
 	i = -1;
 	while (++i < philo->num_of_philo)
 		pthread_mutex_init(&philo->forks[i], NULL);
-	pthread_mutex_init(&philo->message, NULL);
+	pthread_mutex_init(&philo->console, NULL);
 	pthread_mutex_init(&philo->dead_philo, NULL);
 	pthread_mutex_lock(&philo->dead_philo);
 }
 
-int	init_all(t_philo *philo, int argc, char **argv)
+static int	init_all(t_philo *philo, int argc, char **argv)
 {
 	int i;
 
@@ -52,7 +51,7 @@ int	init_all(t_philo *philo, int argc, char **argv)
 	while (++i < philo->num_of_philo)
 		pthread_mutex_init(&philo->forks[i], NULL);
 	pthread_mutex_init(philo->forks, NULL);
-	pthread_mutex_init(&philo->message, NULL);
+	pthread_mutex_init(&philo->console, NULL);
 	init_mutexes(philo);
 	return (0);
 }

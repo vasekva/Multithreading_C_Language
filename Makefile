@@ -10,7 +10,7 @@ OBJS_DIR		=	./objs/
 SRCS_FILES		= main.c actions.c lifecycle_utils.c lifecycle_utils_1.c \
 					lifecycle_utils_2.c check_functions.c
 
-TMP_SRCS_FILES		= main.c loop_live.c \
+TMP_SRCS_FILES		= main.c cycle_functions.c \
 						check_functions.c lifecycle_utils.c lifecycle_utils_1.c lifecycle_utils_2.c
 
 OBJS_FILES		= $(SRCS_FILES:.c=.o)
