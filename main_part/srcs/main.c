@@ -5,100 +5,78 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jberegon <jberegon@student.21-schoo>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/23 15:29:25 by jberegon          #+#    #+#             */
-/*   Updated: 2021/08/23 15:29:28 by jberegon         ###   ########.fr       */
+/*   Created: 2021/08/27 22:31:54 by jberegon          #+#    #+#             */
+/*   Updated: 2021/08/27 22:31:55 by jberegon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main_header.h"
 
-int	clear_all(t_params *args)
+static void	clear_all(t_philo *philo)
 {
 	int	i;
 
-	i = 0;
-	while (i < args->num_of_philo)
+	pthread_mutex_lock(&philo->dead_philo);
+	pthread_mutex_destroy(&philo->dead_philo);
+	pthread_mutex_destroy(&philo->console);
+	i = -1;
+	while (++i < philo->num_of_philo)
 	{
-		pthread_mutex_destroy(&args->forks[i]);
-		i++;
+		pthread_mutex_destroy(&philo->forks[i]);
 	}
-	i = 0;
-	while (i < args->num_of_philo)
-	{
-		if (pthread_detach(args->philos[i]) != 0)
-			return (-1);
-		i++;
-	}
-	free(args->philos);
-	free(args->forks);
-	free(args->philo_data);
-	return (0);
+	pthread_mutex_destroy(&philo->dead_philo);
+	free(philo->forks);
+	free(philo->s_params);
 }
 
-static int	run_observe_philo(t_params *params)
+static void	init_mutexes(t_philo *philo)
 {
-	int	process_time;
 	int	i;
 
-	while (params->stop_flag == 0)
-	{
-		if (params->meal_count != 0
-			&& (params->num_of_philo_eaten >= params->num_of_philo))
-		{
-			params->stop_flag = 1;
-			break ;
-		}
-		i = -1;
-		while (++i < params->num_of_philo)
-		{
-			process_time = get_time(params->begin_time);
-			check_philo(params->philo_data[i], process_time);
-		}
-		usleep(1);
-	}
-	return (0);
+	i = -1;
+	while (++i < philo->num_of_philo)
+		pthread_mutex_init(&philo->forks[i], NULL);
+	pthread_mutex_init(&philo->console, NULL);
+	pthread_mutex_init(&philo->dead_philo, NULL);
+	pthread_mutex_lock(&philo->dead_philo);
 }
 
-int	init_struct(t_params *params, int argc, char **argv)
+static int	init_all(t_philo *philo, int argc, char **argv)
 {
-	params->num_of_philo = ft_atoi(argv[1]);
-	params->time_to_die = ft_atoi(argv[2]);
-	params->time_to_eat = ft_atoi(argv[3]);
-	params->time_to_sleep = ft_atoi(argv[4]);
+	int	i;
+
+	philo->num_of_philo = ft_atoi(argv[1]);
+	philo->time_to_die = ft_atoi(argv[2]);
+	philo->time_to_eat = ft_atoi(argv[3]);
+	philo->time_to_sleep = ft_atoi(argv[4]);
 	if (argc == 6)
-		params->meal_count = ft_atoi(argv[5]);
+		philo->meal_count = ft_atoi(argv[5]);
 	else
-		params->meal_count = 0;
-	params->stop_flag = 0;
-	params->num_of_philo_eaten = 0;
-	params->philo_data = malloc(sizeof(t_philo *) * params->num_of_philo);
-	params->philos = malloc(sizeof(pthread_t) * params->num_of_philo);
-	params->forks = malloc(sizeof(pthread_mutex_t) * params->num_of_philo);
-	if (!params->philos || !params->forks || !params->philo_data)
+		philo->meal_count = -1;
+	i = -1;
+	philo->forks = (pthread_mutex_t *)
+		malloc(sizeof(pthread_mutex_t) * philo->num_of_philo);
+	philo->s_params = (t_params *)
+		malloc(sizeof(t_params) * philo->num_of_philo);
+	if (philo->s_params == NULL || philo->forks == NULL)
 		return (-1);
-	else
-		return (0);
+	while (++i < philo->num_of_philo)
+		pthread_mutex_init(&philo->forks[i], NULL);
+	pthread_mutex_init(philo->forks, NULL);
+	pthread_mutex_init(&philo->console, NULL);
+	init_mutexes(philo);
+	return (0);
 }
 
-int	main(int argc, char *argv[])
+int	main(int argc, char **argv)
 {
-	t_params	params;
-	int			i;
+	t_philo	philo;
 
 	if (ft_check_params(argc, &argv[1]) == -1)
 		return (-1);
-	if (init_struct(&params, argc, argv) == -1)
+	if (init_all(&philo, argc, argv) == -1)
 		return (-1);
-	i = 0;
-	gettimeofday(&params.begin_time, NULL);
-	while (i < params.num_of_philo)
-	{
-		pthread_mutex_init(&params.forks[i], NULL);
-		i++;
-	}
-	pthread_mutex_init(&params.console, NULL);
-	run_lifecycle(&params);
-	run_observe_philo(&params);
-	clear_all(&params);
+	run_lifecycle(&philo);
+	clear_all(&philo);
 	return (0);
 }

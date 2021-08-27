@@ -5,96 +5,71 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jberegon <jberegon@student.21-schoo>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/23 15:28:27 by jberegon          #+#    #+#             */
-/*   Updated: 2021/08/23 15:28:29 by jberegon         ###   ########.fr       */
+/*   Created: 2021/08/27 22:31:17 by jberegon          #+#    #+#             */
+/*   Updated: 2021/08/27 22:31:19 by jberegon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main_header.h"
 
-int	get_time(struct timeval start)
+void	my_usleep(long time)
 {
-	struct timeval	now;
+	long	t;
 
-	if (gettimeofday(&now, NULL) == -1)
-		return (-1);
-	return (((now.tv_sec * 1000) + (now.tv_usec / 1000))
-		- ((start.tv_sec * 1000) + (start.tv_usec / 1000)));
+	t = get_curr_time();
+	while (get_curr_time() - t < time)
+		usleep(100);
 }
 
-static int	check_status(t_philo *philo, int process_time)
+long	get_curr_time(void)
 {
-	if (process_time == -1)
-		return (-1);
-	check_philo(philo, process_time);
-	if (philo->params->stop_flag == 1)
-		return (-1);
-	if (philo->status == thinking)
+	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	return (time.tv_sec * 1000 + time.tv_usec / 1000);
+}
+
+static int	start_threads(t_philo *philo)
+{
+	int			i;
+	pthread_t	thread;
+
+	philo->begin_time = get_curr_time();
+	if (philo->meal_count != -1)
 	{
-		start_meal(philo, process_time);
+		if (pthread_create(&thread, NULL, &ft_observer, philo) != 0)
+			return (1);
 	}
-	if (philo->status == eating)
+	i = 0;
+	while (i < philo->num_of_philo)
 	{
-		if (process_time >= philo->last_meal + philo->params->time_to_eat)
-			finish_meal(philo, process_time);
-	}
-	if (philo->status == sleeping)
-	{
-		if (process_time >= philo->sleep_start
-			+ philo->params->time_to_sleep)
-		{
-			philo->status = thinking;
-			print_message(philo);
-		}
+		philo->s_params[i].time_to_death = get_curr_time() + philo->time_to_die;
+		if (pthread_create(&philo->s_params[i].thread, NULL,
+				&cycle_checks_start, (void *)(&philo->s_params[i])) != 0)
+			return (-1);
+		pthread_detach(philo->s_params[i].thread);
+		i++;
 	}
 	return (0);
 }
 
-static void	*start_processes(void *data)
+void	run_lifecycle(t_philo *philo)
 {
-	t_philo	*philo;
-	int		process_time;
-
-	philo = (t_philo *)data;
-	if (philo->philo_id == 1)
-	{
-		philo->right_fork_id = 0;
-		philo->left_fork_id = philo->params->num_of_philo - 1;
-	}
-	else
-	{
-		philo->right_fork_id = philo->philo_id - 1;
-		philo->left_fork_id = philo->philo_id - 2;
-	}
-	while (philo->params->stop_flag == 0)
-	{
-		process_time = get_time(philo->params->begin_time);
-		if (check_status(philo, process_time) == -1)
-			return (NULL);
-		usleep(10);
-	}
-	free(data);
-	return (NULL);
-}
-
-int	run_lifecycle(t_params *params)
-{
-	int		i;
-	t_philo	*philo;
+	int	i;
 
 	i = -1;
-	while (++i < params->num_of_philo)
+	while (++i < philo->num_of_philo)
 	{
-		philo = malloc(sizeof(t_philo));
-		philo->philo_id = i + 1;
-		philo->params = params;
-		philo->status = thinking;
-		philo->last_meal = 0;
-		philo->meal_count = 0;
-		philo->sleep_start = 0;
-		params->philo_data[i] = philo;
-		pthread_create(&params->philos[i], NULL, start_processes, philo);
-		usleep(100);
+		philo->s_params[i].time_last_meal = 0;
+		philo->s_params[i].count_of_meal = 0;
+		philo->s_params[i].philo_id = i + 1;
+		philo->s_params[i].is_e_philo = 0;
+		if ((philo->s_params[i].philo_id % 2) == 0)
+			philo->s_params[i].is_e_philo = 1;
+		philo->s_params[i].left_fork = &philo->forks[i];
+		philo->s_params[i].right_fork
+			= &philo->forks[(i + 1) % philo->num_of_philo];
+		philo->s_params[i].philo = philo;
 	}
-	return (0);
+	start_threads(philo);
 }

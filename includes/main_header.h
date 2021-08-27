@@ -5,68 +5,66 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jberegon <jberegon@student.21-schoo>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/23 15:31:47 by jberegon          #+#    #+#             */
-/*   Updated: 2021/08/23 15:31:49 by jberegon         ###   ########.fr       */
+/*   Created: 2021/08/27 22:59:08 by jberegon          #+#    #+#             */
+/*   Updated: 2021/08/27 22:59:09 by jberegon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAIN_HEADER_H
 # define MAIN_HEADER_H
 
-# include "errors.h"
-# include <unistd.h>
-# include <sys/time.h>
 # include <stdlib.h>
+# include <sys/time.h>
+# include <unistd.h>
 # include <pthread.h>
+# include "errors.h"
 
 typedef struct s_params	t_params;
 
-typedef enum e_status
-{
-	eating,
-	sleeping,
-	thinking,
-	taking_l_fork,
-	taking_r_fork,
-	dead
-}				t_status;
-
 typedef struct s_philo
-{
-	int			philo_id;
-	int			last_meal;
-	int			sleep_start;
-	int			meal_count;
-	int			right_fork_id;
-	int			left_fork_id;
-	t_params	*params;
-	t_status	status;
-}				t_philo;
-
-typedef struct s_params
 {
 	int				num_of_philo;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				meal_count;
-	int				stop_flag;
-	int				num_of_philo_eaten;
-	pthread_t		*philos;
+	long			begin_time;
+	t_params		*s_params;
 	pthread_mutex_t	*forks;
+	pthread_mutex_t	dead_philo;
 	pthread_mutex_t	console;
-	t_philo			**philo_data;
-	struct timeval	begin_time;
+}				t_philo;
+
+typedef struct s_params
+{
+	int				is_e_philo;
+	int				count_of_meal;
+	int				philo_id;
+	long			time_last_meal;
+	long			time_to_death;
+	pthread_t		thread;
+	pthread_mutex_t	is_dead;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*right_fork;
+	t_philo			*philo;
 }				t_params;
 
 /// CHECK_FUNCTIONS.C
 int		ft_check_params(int argc, char *argv[]);
 
 /**
+ * CYCLE_FUNCTIONS.C
+ */
+void	*ft_death_check(void *data);
+void	*ft_observer(void *data);
+void	*cycle_checks_start(void *data);
+
+/**
  * LIFECYCLE_UTILS.C
  */
-int		run_lifecycle(t_params *params);
-int		get_time(struct timeval start);
+void	run_lifecycle(t_philo *philo);
+long	get_curr_time(void);
+void	my_usleep(long time);
 
 /**
  * LIFECYCLE_UTILS_1.C
@@ -82,11 +80,4 @@ void	*ft_memset(void *destination, int c, size_t n);
 char	*ft_itoa(int n);
 int		exception(char *str);
 
-/**
- * ACTIONS.C
- */
-int		print_message(t_philo *philo);
-int		start_meal(t_philo *philo, int process_time);
-int		finish_meal(t_philo *philo, int process_time);
-void	check_philo(t_philo *philo, int process_time);
 #endif

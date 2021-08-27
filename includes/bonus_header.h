@@ -45,7 +45,7 @@ typedef struct s_params
 	int		stop_flag;
 	int		is_all_ate;
 	long	begin_time;
-	t_philo	philosophers[250];
+	t_philo	philosophers[200];
 	sem_t	*forks;
 	sem_t	*console;
 	sem_t	*meal;
