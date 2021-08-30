@@ -59,7 +59,7 @@ static void	*check_death(void *data)
 			params->is_all_ate = 1;
 			break ;
 		}
-		usleep(1000);
+		ft_usleep();
 	}
 	exit(0);
 }
@@ -87,10 +87,10 @@ static void	start_processes(void *data, t_params *params)
 	pthread_create(&(philo->thread_id), NULL, check_death, data);
 	if (philo->philo_id % 2)
 		usleep(15000);
-	while (!params->stop_flag && params->is_all_ate != 1)
+	while (params->is_all_ate != 1 && !params->stop_flag)
 	{
 		philo_eat(philo, params);
-		if (philo->meal_count >= params->meal_count && params->meal_count != -1)
+		if (params->meal_count != -1 && philo->meal_count >= params->meal_count)
 			break ;
 		print_message(params, philo->philo_id, "is sleeping");
 		philo_sleep(philo, params);

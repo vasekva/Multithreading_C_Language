@@ -7,13 +7,14 @@ TMP_SRCS_DIR	=	./new_main_part/srcs/
 BONUS_SRCS_DIR	=	./bonus_part/srcs/
 OBJS_DIR		=	./objs/
 
-SRCS_FILES		= main.c cycle_functions.c \
-						check_functions.c lifecycle_utils.c lifecycle_utils_1.c lifecycle_utils_2.c
+MAIN_FILES		= main.c cycle_functions.c check_functions.c itoa_exception.c lib_functions.c lifecycle_utils.c
+
+BONUS_FILES		= main.c actions.c check_functions.c itoa_exception.c lib_functions.c lifecycle_utils.c
 
 OBJS_FILES		= $(SRCS_FILES:.c=.o)
 
-MAIN_SRCS			= $(addprefix $(MAIN_SRCS_DIR), $(SRCS_FILES))
-BONUS_SRCS			= $(addprefix $(BONUS_SRCS_DIR), $(SRCS_FILES))
+MAIN_SRCS		= $(addprefix $(MAIN_SRCS_DIR), $(MAIN_FILES))
+BONUS_SRCS		= $(addprefix $(BONUS_SRCS_DIR), $(BONUS_FILES))
 
 CC				=	gcc
 CFLAGS			=	-Wall -Wextra -Werror

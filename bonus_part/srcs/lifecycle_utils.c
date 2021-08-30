@@ -12,6 +12,20 @@
 
 #include "bonus_header.h"
 
+void	ft_usleep(void)
+{
+	usleep(100);
+	usleep(100);
+	usleep(100);
+	usleep(100);
+	usleep(100);
+	usleep(100);
+	usleep(100);
+	usleep(100);
+	usleep(100);
+	usleep(100);
+}
+
 static void	print_num_str(int number)
 {
 	char	*tmp;

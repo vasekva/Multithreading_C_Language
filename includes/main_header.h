@@ -67,7 +67,7 @@ long	get_curr_time(void);
 void	ft_usleep(void);
 
 /**
- * LIFECYCLE_UTILS_1.C
+ * LIB_FUNCTIONS.C
  */
 int		ft_atoi(const char *str);
 void	*ft_calloc(size_t count, size_t size);
@@ -75,7 +75,7 @@ size_t	ft_strlen(const char *str);
 void	*ft_memset(void *destination, int c, size_t n);
 
 /**
- * LIFECYCLE_UTILS_2.C
+ * ITOA_EXCEPTION.C
  */
 char	*ft_itoa(int n);
 int		exception(char *str);
