@@ -64,7 +64,7 @@ void	*cycle_checks_start(void *data);
  */
 void	run_lifecycle(t_philo *philo);
 long	get_curr_time(void);
-void	my_usleep(long time);
+void	ft_usleep(void);
 
 /**
  * LIFECYCLE_UTILS_1.C

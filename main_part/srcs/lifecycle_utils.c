@@ -12,13 +12,18 @@
 
 #include "main_header.h"
 
-void	my_usleep(long time)
+void	ft_usleep(void)
 {
-	long	t;
-
-	t = get_curr_time();
-	while (get_curr_time() - t < time)
-		usleep(100);
+	usleep(100);
+	usleep(100);
+	usleep(100);
+	usleep(100);
+	usleep(100);
+	usleep(100);
+	usleep(100);
+	usleep(100);
+	usleep(100);
+	usleep(100);
 }
 
 long	get_curr_time(void)

@@ -29,7 +29,7 @@ void	*ft_observer(void *data)
 		}
 		if (i == philo->num_of_philo)
 			break ;
-		my_usleep(1000);
+		ft_usleep();
 	}
 	pthread_mutex_lock(&philo->console);
 	pthread_mutex_unlock(&philo->dead_philo);
@@ -60,7 +60,7 @@ void	*ft_death_check(void *data)
 			pthread_mutex_unlock(&s_params->philo->dead_philo);
 			return (NULL);
 		}
-		usleep(1000);
+		ft_usleep();
 	}
 }
 
@@ -110,7 +110,7 @@ void	*cycle_checks_start(void *data)
 	s_params = (t_params *)data;
 	if (s_params->is_e_philo)
 	{
-		my_usleep(1000);
+		ft_usleep();
 		s_params->is_e_philo = 0;
 	}
 	s_params->time_last_meal = get_curr_time();
@@ -121,7 +121,7 @@ void	*cycle_checks_start(void *data)
 	pthread_detach(thread);
 	while (s_params->count_of_meal != s_params->philo->meal_count)
 		print_philo_status(s_params);
-	my_usleep(1000);
+	ft_usleep();
 	pthread_mutex_lock(&s_params->philo->console);
 	pthread_mutex_unlock(&s_params->philo->dead_philo);
 	return (NULL);
